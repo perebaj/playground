@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "ocr-table"
+version = "0.1.0"
+description = ""
+authors = ["Jojo <jonathan.silva@birdie.ai>"]
+readme = "README.md"
+packages = [{include = "ocr_table"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+tabula-py = "^2.6.0"
+numpy = "^1.24.1"
+pymupdf = "^1.21.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
