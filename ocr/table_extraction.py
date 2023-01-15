@@ -11,8 +11,9 @@ _OUTPUT_PATH = f"data/{file_name}_output.txt"
 
 
 _REMOVE_REGEX_1 = "^Código para aferir autenticidade deste caderno: \d{6}$"
-_REMOVE_REGEX_2 = "^(\d{4}\/\d{4})$"
-_REMOVE_REGEX_3 = "^(\d)$"
+_REMOVE_REGEX_2 = "^\d{4}\/\d{4}$"
+_REMOVE_REGEX_3 = "^\d+$"
+_REMOVE_REGEX_4 = "^Tribunal Superior do Trabalho$"
 
 
 def pdf_to_text(pdf_path):
@@ -47,30 +48,16 @@ def process_chunk(diario_list, regex):
 
 # pdf_to_text(_DEJT_PATH)
 diario_list = get_output_txt()
-procces_chunk_list = process_chunk(diario_list[:5000], _PROCESS_IDENTIFIER)
-print(f"Found {len(procces_chunk_list)} processos")
-print(f"Type: {type(procces_chunk_list[2])}")
-for item in procces_chunk_list:
-    item_list = item.split("\n")
-    for index, value in enumerate(item_list):
-        if re.match(_REMOVE_REGEX_1, value):
-            item_list.pop(index)
-        if re.match(_REMOVE_REGEX_2, value):
-            item_list.pop(index)
-        if re.match(_REMOVE_REGEX_3, value):
-            item_list.pop(index)
-    print(item)
-# print(procces_chunk_list[2].split("\n"))
-# print(procces_chunk_list[0])
-# print(re.match("DIÁRIO", "UM TESTE DIÀRIO DIÁRIO"))
-# clean = re.findall(_REMOVE_REGEX_1, procces_chunk_list[2])
-# print(clean)
+procces_chunk_list = process_chunk(diario_list, _PROCESS_IDENTIFIER)
 
-# text_file = open("data/sample3.txt", "w")
-# n = text_file.write(procces_chunk_list[2])
-# text_file.close()
-# print(get_output_txt(_OUTPUT_PATH))
-# for page in doc.pages():
-#     text = page.get_text().encode("utf-8")
-#     f.write(text)
-#     f.write(bytes((12,)))
+procces_chunk_list_before_treatment = []
+for process in procces_chunk_list:
+    proccess_after_treatment = process
+    n_process = re.sub(_REMOVE_REGEX_1, "", proccess_after_treatment, flags=re.MULTILINE)
+    n_process = re.sub(_REMOVE_REGEX_2, "", n_process, flags=re.MULTILINE)
+    n_process = re.sub(_REMOVE_REGEX_3, "", n_process, flags=re.MULTILINE)
+    n_process = re.sub(_REMOVE_REGEX_4, "", n_process, flags=re.MULTILINE)
+    procces_chunk_list_before_treatment.append(n_process)
+
+with open("data/processed.json", "w", encoding="utf8") as f:
+    json.dump(procces_chunk_list_before_treatment, f, ensure_ascii=False)
