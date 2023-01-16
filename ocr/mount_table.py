@@ -15,10 +15,11 @@ for process in data:
         dict_table["procces_id"] = match.group()
     else:
         dict_table["procces_id"] = None
-    dict_table["proccess"] = process
+    dict_table["process"] = process
     dict_table["extract_at"] = "2023-01-09"
     dict_table["title"] = "Edição 3637/2023 - Caderno do Tribunal Superior do Trabalho - Judiciário"
-    table_list.append(dict_table)
+    if len(dict_table["process"]) > 1600:
+        table_list.append(dict_table)
 
 with open("data/processed_table.json", "w", encoding="utf8") as f:
     json.dump(table_list, f, ensure_ascii=False)

@@ -1,14 +1,14 @@
 [tool.poetry]
-name = "python"
+name = "etl-dejt"
 version = "0.1.0"
 description = ""
 authors = ["Jojo <jonathan.silva@birdie.ai>"]
 readme = "README.md"
+packages = [{include = "etl_dejt"}]
 
 [tool.poetry.dependencies]
 python = "^3.10"
-pydantic-factories = "^1.17.0"
-matplotlib = "^3.6.3"
+pymupdf = "^1.21.1"
 
 
 [build-system]
