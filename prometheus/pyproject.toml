@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "prometheus"
+version = "0.1.0"
+description = ""
+authors = ["Jojo <jonathan.silva@birdie.ai>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+prometheus-client = "^0.16.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
