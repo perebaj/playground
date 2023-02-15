@@ -74,7 +74,7 @@ class Extraction():
             dict_table["title"] = self.file_name
             dict_table["book"] = "Caderno do Tribunal Superior do Trabalho - Judiciário"
             
-            if len(process) > 1600:
+            if len(process) > 2000:
                 table_list.append(dict_table)
         return table_list
 
@@ -90,7 +90,7 @@ class Extraction():
 
 
 if __name__ == "__main__":
-    path = "/root/playground/etl_dejt/data/*.pdf"
+    path = "/root/playground/etl_dejt/data/data17-01-2023--27-01-2023/*.pdf"
     files_list = glob.glob(path)
     entiry_table_list = []
     for file in files_list:
@@ -104,6 +104,6 @@ if __name__ == "__main__":
         entiry_table_list.extend(table_list)
  
 
-    # clean_path = f"clean/entire_table_clean.json"
-    # with open(clean_path, "w") as f:
-    #     json.dump(entiry_table_list, f, ensure_ascii=False)
+    clean_path = f"clean/entire_table_clean3.json"
+    with open(clean_path, "w") as f:
+        json.dump(entiry_table_list, f, ensure_ascii=False)
