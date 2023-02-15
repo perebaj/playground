@@ -4,7 +4,7 @@ import json
 import matplotlib.pyplot as plt
 import numpy as np
 
-with open("/root/playground/ocr/data/processed_table.json") as f:
+with open("/root/playground/etl_dejt/clean/entire_table_clean.json") as f:
     data = json.load(f)
 
 

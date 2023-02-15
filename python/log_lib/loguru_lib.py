@@ -1,18 +1,35 @@
 from loguru import logger
 from google.cloud.logging.handlers import StructuredLogHandler
 import sys
+ENABLE_JSON_LOG = False
 
-handler = StructuredLogHandler()
-   
+def fmt(record):
+    elapsed = record["elapsed"]
+    level = record["level"]
+    message = record["message"]
 
-logger.add(handler, level="INFO", serialize=True, enqueue=False)
-context_logger = logger.bind(ip="192.168.0.1", user="someone")
+    msg = f"{elapsed} : {level} : "
+    msgparts = []
+    for key, val in record["extra"].items():
+        msgparts.append(key + "=" + val)
+
+    msgparts.append(message)
+    msg += " ".join(msgparts)
+    return msg + "\n"
 
 
-if __name__ == "__main__":
-    for _ in range(10):
-        context_logger.info("Contextualize your logger easily")
-        context_logger.error("ERROR")
+if ENABLE_JSON_LOG:
+    handler = StructuredLogHandler()
+    logger.remove()
+    logger.add(handler, level="INFO", serialize=True, enqueue=True)
+else:
+    logger.remove()
+    logger.add(sys.stdout, serialize=False, enqueue=True, level="INFO", format="{time} - {level} - {message} - {extra}")
 
 
-    
+def message_handler():
+    context_logger = logger.bind(message_id="1209301283190238", jojo="jojo")
+    context_logger.info(f"Message handler")
+    context_logger.info(f"Calling controller handler")
+
+message_handler()
