@@ -3,7 +3,7 @@ from google.cloud.logging.handlers import StructuredLogHandler
 import sys
 from fastapi import HTTPException
 
-ENABLE_JSON_LOG = False
+ENABLE_JSON_LOG = True
 EXCEPTION = True
 
 class ApplicationException(HTTPException):
@@ -26,25 +26,21 @@ class ApplicationException(HTTPException):
         self.details = details
         self.status_code = status_code if status_code is not None else 500
 
+logger.remove()
 if ENABLE_JSON_LOG:
     handler = StructuredLogHandler()
-    logger.remove()
-    logger.add(handler, level="INFO", serialize=True, enqueue=True)
+    logger.add(handler, level="INFO", serialize=True, enqueue=True, backtrace=True, diagnose=True, format="{message}")
 else:
-    logger.remove()
     logger.add(sys.stdout, serialize=False, enqueue=True, level="INFO", format="{time} - {level} - {message} - {extra}")
 
 
 def message_handler():
-    context_logger = logger.bind(message_id="1209301283190238", jojo="jojo")
-    context_logger.info(f"Message handler")
-    context_logger.info(f"Calling controller handler")
-    if EXCEPTION:
-        raise ApplicationException(
-                details="asd",
-                status_code=400,
-                key="feedback_upinsert_error",
-                message="Error while upserting feedback to elastic",
-            )
+    try:
+        context_logger = logger.bind(message_id="1209301283190238", jojo="jojo")
+        context_logger.info(f"Message handler")
+        context_logger.info(f"Calling controller handler")
+        suma = 1/0
+    except:
+        logger.opt(exception=True).error(f"Error while handling message")
 
 message_handler()
