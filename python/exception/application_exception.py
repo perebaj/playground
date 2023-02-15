@@ -4,34 +4,14 @@ import sys
 from fastapi import HTTPException
 
 ENABLE_JSON_LOG = True
-EXCEPTION = True
 
-class ApplicationException(HTTPException):
-    def __init__(
-        self,
-        key: str,
-        message: str = None,
-        details: any = None,
-        status_code: int = None,
-    ):
-        """
-        Construtor.
-        - key: identificador unico do erro dentro da aplicação.
-        - message: Mensagem do erro.
-        - details: Detalhes do erro.
-        - http_status_code: Código do erro HTTP (valor padrão 500).
-        """
-        self.key = key if key is not None else "application_with_error"
-        self.message = message
-        self.details = details
-        self.status_code = status_code if status_code is not None else 500
 
 logger.remove()
 if ENABLE_JSON_LOG:
     handler = StructuredLogHandler()
-    logger.add(handler, level="INFO", serialize=True, enqueue=True, backtrace=True, diagnose=True, format="{message}")
+    logger.add(handler, level="INFO", serialize=True, enqueue=True, backtrace=True, diagnose=False, format="{message}", colorize=False)
 else:
-    logger.add(sys.stdout, serialize=False, enqueue=True, level="INFO", format="{time} - {level} - {message} - {extra}")
+    logger.add(sys.stdout, serialize=False, enqueue=True, level="INFO", format="{time} - {level} - {message} - {extra}", colorize=False,  backtrace=True, diagnose=True,)
 
 
 def message_handler():
