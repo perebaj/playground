@@ -4,7 +4,7 @@ import sys
 from fastapi import HTTPException
 
 ENABLE_JSON_LOG = False
-EXCEPTION = True
+EXCEPTION = False
 
 class ApplicationException(HTTPException):
     def __init__(
@@ -29,16 +29,17 @@ class ApplicationException(HTTPException):
 if ENABLE_JSON_LOG:
     handler = StructuredLogHandler()
     logger.remove()
-    logger.add(handler, level="INFO", serialize=True, enqueue=True)
+    logger.add(handler, level="INFO", serialize=True, enqueue=False)
 else:
     logger.remove()
-    logger.add(sys.stdout, serialize=False, enqueue=True, level="INFO", format="{time} - {level} - {message} - {extra}")
+    logger.add(sys.stdout, serialize=False, enqueue=False, level="INFO", format="{time} - {level} - {message} - {extra}")
 
 
 def message_handler():
     context_logger = logger.bind(message_id="1209301283190238", jojo="jojo")
     context_logger.info(f"Message handler")
     context_logger.info(f"Calling controller handler")
+    context_logger.debug("Debugging")
     if EXCEPTION:
         raise ApplicationException(
                 details="asd",
