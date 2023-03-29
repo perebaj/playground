@@ -2,3 +2,5 @@ tmp.*
 etl_dejt/data
 etl_dejt/clean
 
+__pycache__/
+*/**/__pycache__
