@@ -22,7 +22,7 @@ func (r *PostgreSQLClassicRepository) Migrate(ctx context.Context) error {
 	_, err := r.db.ExecContext(ctx, `
 		CREATE TABLE IF NOT EXISTS websites (
 			id SERIAL PRIMARY KEY,
-			name TEXT NOT UNIQUE,
+			name TEXT NOT NULL UNIQUE,
 			url TEXT NOT NULL,
 			rank INT NOT NULL
 		)
@@ -102,4 +102,22 @@ func (r *PostgreSQLClassicRepository) Update(ctx context.Context, id int64, upda
 	}
 
 	return &update, nil
+}
+
+func (r *PostgreSQLClassicRepository) Delete(ctx context.Context, id int64) error {
+	res, err := r.db.ExecContext(ctx, "DELETE FROM websites WHERE id = $1", id)
+	if err != nil {
+		return err
+	}
+
+	rowsAffected, err := res.RowsAffected()
+	if err != nil {
+		return err
+	}
+
+	if rowsAffected == 0 {
+		return ErrDeleteFailed
+	}
+
+	return err
 }
