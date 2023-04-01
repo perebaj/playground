@@ -16,11 +16,12 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer db.Close()
 
+	defer db.Close()
 	websiteRepository := website.NewPostgreSQLClassicRepository(db)
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
 	app.RunRepositoryDemo(ctx, websiteRepository)
+
 }
