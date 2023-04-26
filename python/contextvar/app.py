@@ -11,6 +11,8 @@ from google.cloud.logging.handlers import StructuredLogHandler
 
 organization_id_context = contextvars.ContextVar("organization_id_context", default=None)
 trace_id_context = contextvars.ContextVar("trace_id_context", default=None)
+logger_context = contextvars.ContextVar("logger_context", default=logger)
+
 
 class ContextVariableMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next: RequestResponseEndpoint) -> Response:
@@ -22,27 +24,34 @@ class ContextVariableMiddleware(BaseHTTPMiddleware):
         return await call_next(request)
 
 
-
 logger.remove()
 handler = StructuredLogHandler()
-logger.add(handler, level="INFO", serialize=True, enqueue=True, backtrace=True, diagnose=False, format="{message}", colorize=False)
+logger.add(
+    handler,
+    level="INFO",
+    serialize=True,
+    enqueue=True,
+    backtrace=True,
+    diagnose=False,
+    format="{message}",
+    colorize=False,
+)
 
 
 app = FastAPI()
 
 app.add_middleware(ContextVariableMiddleware)
 
+
 @app.get("/")
 async def root():
     try:
         await asyncio.sleep(2)
         logger.info("TESTE")
-        print(5/0)
+        print(5 / 0)
     except Exception as e:
         # logger.error(f"Error occurred: {e}", exc_info=e)
         logger.opt(exception=True).error("Error occurred")
     # logger.info(f"organization_id_context: {organization_id_context.get()}")
     # logger.info(f"trace_id_context: {trace_id_context.get()}")
     # return {"message": "Hello World"}
-
-
