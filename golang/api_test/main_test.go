@@ -14,7 +14,7 @@ func TestUpperCaseHandler(t *testing.T) {
 	upperCaseHandler(w, req)                                           // call the handler
 	res := w.Result()                                                  // get the result
 	defer res.Body.Close()
-	data, _ := ioutil.ReadAll(res.Body)
+	data, err := ioutil.ReadAll(res.Body)
 	fmt.Println(string(data))
 	if err != nil {
 		t.Errorf("expected error to be nil got %v", err)
