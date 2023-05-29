@@ -31,7 +31,8 @@ async def index():
     await asyncio.sleep(1)
     apicall = APIClusterKeyword()
     response = await apicall.cluster_keywords_search()
-    print(response)
+    # json = response.json()
+    response["name"] = "Tomato"
     return response
 
 

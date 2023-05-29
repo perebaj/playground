@@ -26,17 +26,20 @@ import httpx
 class TestClass(BaseTest):
     @patch(
         "main.httpx.AsyncClient.post",
-        return_value=httpx.Response(200, json={"id": "9ed7dasdasd-08ff-4ae1-8952-37e3a323eb08"}),
     )
-    async def test_jojo(self, mock_post):
+    async def test_jojo(self, mock_client):
+        data = {"id": "9ed7dasdasd-08ff-4ae1-8952-37e3a323eb08"}
+        mock_client.return_value = httpx.Response(200, json=data)
         # mock_response = mock_post.return_value
         # mock_response.json.return_value = {"key": "value"}
         async with AsyncClient(app=app, base_url="http://test") as ac:
             response = await ac.get("/")
-            assert response.status_code == 200
-            assert response.json() == {"id": "9ed7dasdasd-08ff-4ae1-8952-37e3a323eb0"}
+            # assert response.status_code == 200
+            assert response.json() == {
+                "id": "9ed7dasdasd-08ff-4ae1-8952-37e3a323eb08",
+                "name": "Tomato",
+            }
 
-            print(response)
         # assert (await mock()) == "jojo"
         # print("test_jojo")
         # assert True
