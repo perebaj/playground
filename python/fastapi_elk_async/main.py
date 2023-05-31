@@ -19,20 +19,19 @@ async def app_shutdown():
     await es.close()  # This gets called once the app is shutting down.
 
 
-class APIClusterKeyword:
-    async def cluster_keywords_search(self):
-        async with httpx.AsyncClient() as client:
-            response = await client.post("/keyword_v2/cluster_search")
-        return response.json()
+from fastapi_elk_async.apicall import APIClusterKeyword
 
 
 @app.get("/")
 async def index():
     await asyncio.sleep(1)
     apicall = APIClusterKeyword()
+    print("JOJO")
+    print("JOJO PRINT")
+
     response = await apicall.cluster_keywords_search()
     # json = response.json()
-    response["name"] = "Tomato"
+    response["name"] = "Jojo"
     return response
 
 

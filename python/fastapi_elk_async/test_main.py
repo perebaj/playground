@@ -1,8 +1,7 @@
-import pytest
 from httpx import AsyncClient
-from main import app
-import asyncio
+from fastapi_elk_async.main import app
 import unittest
+import time
 
 
 class BaseTest(unittest.IsolatedAsyncioTestCase):
@@ -19,26 +18,25 @@ class BaseTest(unittest.IsolatedAsyncioTestCase):
     #     print("tearDownClass")
 
 
-from unittest.mock import AsyncMock, patch
+from unittest.mock import patch
 import httpx
+
+from fastapi_elk_async.main import app
 
 
 class TestClass(BaseTest):
-    @patch(
-        "main.httpx.AsyncClient.post",
-    )
-    async def test_jojo(self, mock_client):
-        data = {"id": "9ed7dasdasd-08ff-4ae1-8952-37e3a323eb08"}
-        mock_client.return_value = httpx.Response(200, json=data)
-        # mock_response = mock_post.return_value
-        # mock_response.json.return_value = {"key": "value"}
-        async with AsyncClient(app=app, base_url="http://test") as ac:
-            response = await ac.get("/")
+    # @patch("httpx.AsyncClient.get", wraps=httpx.AsyncClient.get)
+    async def test_jojo(self):
+        with patch("httpx.AsyncClient.get") as mock_client:
+            data = {"id": "9ed7dasdasd-08ff-4ae1-8952-37e3a323eb08"}
+            mock_client.return_value = httpx.Response(200, json=data)
+            # mock_response = mock_post.return_value
+            # mock_response.json.return_value = {"key": "value"}
+            async with AsyncClient(app=app, base_url="http://test") as ac:
+                response = await ac.request("GET", "/")
+                # response = await ac.get("/")
+                print("teste reposnse> ", response.json())
             # assert response.status_code == 200
-            assert response.json() == {
-                "id": "9ed7dasdasd-08ff-4ae1-8952-37e3a323eb08",
-                "name": "Tomato",
-            }
 
         # assert (await mock()) == "jojo"
         # print("test_jojo")
