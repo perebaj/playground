@@ -1,0 +1,7 @@
+go 1.20
+
+use (
+	./golang
+	./golang/api_test
+	./golang/postgres
+)
