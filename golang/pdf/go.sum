@@ -1,6 +1,4 @@
 github.com/dslipak/pdf v0.0.1 h1:Kz587BqrBPelWFrblnAFg4jXOY0R6JN3U7U6iwJ2Ae4=
 github.com/dslipak/pdf v0.0.1/go.mod h1:2L3SnkI9cQwnAS9gfPz2iUoLC0rUZwbucpbKi5R1mUo=
-github.com/go-chi/chi/v5 v5.0.10 h1:rLz5avzKpjqxrYwXNfmjkrYYXOyLJd37pz53UFHC6vk=
-github.com/go-chi/chi/v5 v5.0.10/go.mod h1:DslCQbL2OYiznFReuXYUmQ2hGd1aDpCnlMNITLSKoi8=
 github.com/unidoc/unipdf/v3 v3.50.0 h1:+bC4AWZh/8nVLdHY/YoU176OhISryHteT3uQ7g3dlmU=
 github.com/unidoc/unipdf/v3 v3.50.0/go.mod h1:wepYPiDK9JM54sIXGedULFgETtexs8vgqPUp8fQ6vXg=
