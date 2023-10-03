@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	// Reade file
+
 	r, err := pdf.Open("teste.pdf")
 	if err != nil {
 		panic(err)
@@ -32,3 +32,4 @@ func main() {
 
 	f.WriteString(buf.String())
 }
+

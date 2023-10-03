@@ -3,5 +3,6 @@ go 1.21.0
 use (
 	./golang
 	./golang/api_test
+	./golang/authentication
 	./golang/postgres
 )
