@@ -34,16 +34,19 @@ func main() {
 	fmt.Println(in2)
 	m := make(map[int]map[string]int)
 
-	for _, v := range in2 {
-		_, ok2 := m[v.PlayerID]
-		if !ok2 {
-			m[v.PlayerID] = make(map[string]int)
-		}
-		fmt.Println(m)
+	m[1] = make(map[string]int)
+	fmt.Println(m)
 
-		_, ok := m[v.PlayerID][v.Scout]
-		if !ok {
-			m[v.PlayerID][v.Scout]++
-		}
-	}
+	// for _, v := range in2 {
+	// 	_, ok2 := m[v.PlayerID]
+	// 	if !ok2 {
+	// 		m[v.PlayerID] = make(map[string]int)
+	// 	}
+	// 	fmt.Println(m)
+
+	// 	_, ok := m[v.PlayerID][v.Scout]
+	// 	if !ok {
+	// 		m[v.PlayerID][v.Scout]++
+	// 	}
+	// }
 }
