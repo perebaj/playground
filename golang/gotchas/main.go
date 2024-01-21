@@ -1,3 +1,4 @@
+// Reference: https://yourbasic.org/golang/gotcha/
 package main
 
 import (
