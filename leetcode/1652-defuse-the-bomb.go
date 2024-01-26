@@ -13,13 +13,26 @@ func main() {
 	// k = 0
 	// fmt.Println(decrypt(code, k)) // [0,0,0,0]
 
-	code := []int{2, 4, 9, 3} //12,5,6,13
-	k := -2
-	fmt.Println(decrypt(code, k))
+	// code := []int{2, 4, 9, 3} //12,5,6,13
+	// k := -2
+	// fmt.Println(decrypt(code, k))
 
 	// code := []int{10, 5, 7, 7, 3, 2, 10, 3, 6, 9, 1, 6}
 	// k := -4
 	// fmt.Println(decrypt(code, k))
+
+	code := []int{2, 4, 9, 3, 2, 4, 9, 3} //size8
+	n := len(code)
+	k := 3
+	for i := 0; i < len(code); i++ {
+		for j := 0; j < k; j++ {
+			fmt.Println(n - j - i - 1)
+			// fmt.Println((-1 - i) - n)
+
+		}
+		fmt.Println("dif loop")
+	}
+
 }
 
 func decrypt(code []int, k int) []int {
@@ -58,3 +71,23 @@ func decrypt(code []int, k int) []int {
 
 	return res
 }
+
+/*   0,1,2,3,4,5,6,7
+[2,4,9,3,2,4,9,3] k=-3
+
+index0 = 7,6,5
+index1=0,7,6
+index2=1,0,7
+index3=2,1,0
+index4=3,2,1
+index5=4,3,2
+index6=5,4,3
+index7=6,5,4
+
+
+for i->len(code) {
+    for j 0->k{
+        n-1-j
+    }
+}
+*/
