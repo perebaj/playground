@@ -8,13 +8,16 @@ import (
 )
 
 func (m *metrics) WrapHandler(path string, handler http.HandlerFunc) http.HandlerFunc {
+	label := prometheus.Labels{
+		"handler": path,
+	}
+
+	httpRequestTotal := m.httpRequestsTotal.MustCurryWith(label)
+	httpDuration := m.httpDuration.MustCurryWith(label)
+
 	instrumentChain := promhttp.InstrumentHandlerCounter(
-		m.httpRequestsTotal.MustCurryWith(prometheus.Labels{
-			"handler": path,
-		}), promhttp.InstrumentHandlerDuration(
-			m.httpDuration.MustCurryWith(prometheus.Labels{
-				"handler": path,
-			}), handler,
+		httpRequestTotal, promhttp.InstrumentHandlerDuration(
+			httpDuration, handler,
 		),
 	)
 
