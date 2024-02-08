@@ -1,9 +1,10 @@
-go 1.21.5
+go 1.22.0
 
 use (
 	./golang
 	./golang/api_test
 	./golang/authentication
+	./golang/httpmetrics
 	./golang/linkedlist
 	./golang/postgres
 )

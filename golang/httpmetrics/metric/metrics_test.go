@@ -22,6 +22,10 @@ func TestMetrics(t *testing.T) {
 		w.Write([]byte("Hello, world!"))
 	})))
 
+	mux.HandleFunc("/nometric", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte("Hello, world!"))
+	}))
+
 	req := httptest.NewRequest(http.MethodGet, "/", nil)
 	w := httptest.NewRecorder()
 	mux.ServeHTTP(w, req)
@@ -34,6 +38,15 @@ func TestMetrics(t *testing.T) {
 	cnt2 := testutil.CollectAndCount(metric.httpRequestsTotal, "http_requests_total")
 	if cnt2 != 1 {
 		t.Errorf("Expected 1, got %d", cnt2)
+	}
+
+	req2 := httptest.NewRequest(http.MethodGet, "/nometric", nil)
+	w2 := httptest.NewRecorder()
+	mux.ServeHTTP(w2, req2)
+
+	cnt3 := testutil.CollectAndCount(metric.httpDuration, "http_request_duration_seconds")
+	if cnt3 == 0 {
+		t.Errorf("Expected 0, got %d", cnt3)
 	}
 }
 
