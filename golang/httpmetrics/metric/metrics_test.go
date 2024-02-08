@@ -9,7 +9,7 @@ import (
 	"github.com/prometheus/client_golang/prometheus/testutil"
 )
 
-func TestMetrics(t *testing.T) {
+func TestWrapHandler(t *testing.T) {
 	register := prometheus.NewRegistry()
 	metric := NewMetrics(register)
 
