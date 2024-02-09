@@ -43,6 +43,13 @@ func (n *Node) InsertRight(value int) {
 	}
 }
 
+/*
+Depth-First traverses
+It's easy to memorize the order of the traverses, using the place where you need to print the value of the node:
+- In-Order: Between the left and right nodes
+- Post-Order: After the left and right nodes
+- Pre-Order: Before the left and right nodes
+*/
 func inorder(n *Node) {
 	if n != nil {
 		inorder(n.Left)
