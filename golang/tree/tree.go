@@ -99,7 +99,6 @@ func (n *Node) BinarySeachTreeInsert(value int) {
 		if n.Right != nil {
 			n.Right.BinarySeachTreeInsert(value)
 		} else {
-			fmt.Println("Right Side inserting")
 			newNode := Node{
 				Value: value,
 			}

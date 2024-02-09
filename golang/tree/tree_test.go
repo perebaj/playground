@@ -233,9 +233,9 @@ func TestValueExists(t *testing.T) {
 
 	tree.Root.BinarySeachTreeInsert(53)
 	tree.Root.BinarySeachTreeInsert(40)
-	// tree.Root.BinarySeachTreeInsert(35)
-	// tree.Root.BinarySeachTreeInsert(43)
-	// tree.Root.BinarySeachTreeInsert(60)
+	tree.Root.BinarySeachTreeInsert(35)
+	tree.Root.BinarySeachTreeInsert(43)
+	tree.Root.BinarySeachTreeInsert(60)
 
 	ok := tree.Root.valueExists(40)
 
