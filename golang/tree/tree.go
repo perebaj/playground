@@ -15,31 +15,58 @@ type Node struct {
 	Right *Node
 }
 
-func (t *Tree) InsertLeft(value int) {
-	if t.Root.Left == nil {
-		t.Root.Left = &Node{
+func (n *Node) InsertLeft(value int) {
+	if n.Left == nil {
+		n.Left = &Node{
 			Value: value,
 		}
 	} else {
 		newLeftNode := Node{
 			Value: value,
 		}
-		newLeftNode.Left = t.Root.Left // newLeftNode.Left -> T.Root.Left
-		t.Root.Left = &newLeftNode     // t.Root.Left -> newLeftNode
+		newLeftNode.Left = n.Left // newLeftNode.Left -> T.Left
+		n.Left = &newLeftNode     // t.Root.Left -> newLeftNode
 	}
 }
 
-func (t *Tree) InsertRight(value int) {
-	if t.Root.Right == nil {
-		t.Root.Right = &Node{
+func (n *Node) InsertRight(value int) {
+	if n.Right == nil {
+		n.Right = &Node{
 			Value: value,
 		}
 	} else {
 		newRigtNode := Node{
 			Value: value,
 		}
-		newRigtNode.Right = t.Root.Right
-		t.Root.Right = &newRigtNode
+		newRigtNode.Right = n.Right
+		n.Right = &newRigtNode
+	}
+}
+
+func inorder(n *Node) {
+	if n != nil {
+		inorder(n.Left)
+		fmt.Print(n.Value)
+		fmt.Print("-")
+		inorder(n.Right)
+	}
+}
+
+func postoder(n *Node) {
+	if n != nil {
+		postoder(n.Left)
+		postoder(n.Right)
+		fmt.Print(n.Value)
+		fmt.Print("-")
+	}
+}
+
+func preoder(n *Node) {
+	if n != nil {
+		fmt.Print(n.Value)
+		fmt.Print("-")
+		preoder(n.Left)
+		preoder(n.Right)
 	}
 }
 
@@ -54,19 +81,24 @@ func main() {
 	fmt.Println(t.Root.Left)  // Nil
 	fmt.Println(t.Root.Right) // Nil
 
-	fmt.Println("Inserting Left side")
-	fmt.Println(t.Root.Value) // 1
-	t.InsertLeft(2)
-	fmt.Println(t.Root.Left.Value) // 2
-	t.InsertLeft(4)
-	fmt.Println(t.Root.Left.Value)      // 4
-	fmt.Println(t.Root.Left.Left.Value) // 2
+	t.Root.InsertLeft(2)
+	t.Root.InsertRight(5)
 
-	fmt.Println("Inserting Right side")
-	t.InsertRight(3)
-	fmt.Println(t.Root.Value)       // 1
-	fmt.Println(t.Root.Right.Value) // 3
-	t.InsertRight(2)
-	fmt.Println(t.Root.Right.Value)       // 2
-	fmt.Println(t.Root.Right.Right.Value) // 3
+	node2 := t.Root.Left
+	node5 := t.Root.Right
+
+	node2.InsertLeft(3)
+	node2.InsertRight(4)
+
+	node5.InsertLeft(6)
+	node5.InsertRight(7)
+
+	// All of the following traverses are Depth-First traverses, that
+	fmt.Println("In-Order traverses")
+	inorder(t.Root) // Expected result: 3-2-4-1-6-5-7
+	fmt.Println("\nPost-Order traverses")
+	postoder(t.Root) // Expected result: 3-4-2-6-7-5-1
+	fmt.Println("\nPre-Order traverses")
+	preoder(t.Root) // Expected result: 1-2-3-4-5-6-7
+
 }

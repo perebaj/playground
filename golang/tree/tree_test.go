@@ -26,13 +26,13 @@ func TestInsertLeft(t *testing.T) {
 		t.Error(ErrInvalidNode)
 	}
 
-	tree.InsertLeft(3)
+	tree.Root.InsertLeft(3)
 
 	if tree.Root.Left.Value != 3 {
 		t.Error(ErrInvalidNode)
 	}
 
-	tree.InsertLeft(2)
+	tree.Root.InsertLeft(2)
 
 	if tree.Root.Left.Value != 2 {
 		t.Error(ErrInvalidNode)
@@ -62,13 +62,13 @@ func TestInsertRight(t *testing.T) {
 		t.Error(ErrInvalidNode)
 	}
 
-	tree.InsertRight(3)
+	tree.Root.InsertRight(3)
 
 	if tree.Root.Right.Value != 3 {
 		t.Error(ErrInvalidNode)
 	}
 
-	tree.InsertRight(2)
+	tree.Root.InsertRight(2)
 
 	if tree.Root.Right.Value != 2 {
 		t.Error(ErrInvalidNode)
