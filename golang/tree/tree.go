@@ -77,6 +77,46 @@ func preoder(n *Node) {
 	}
 }
 
+/*
+Let’s break it down.
+
+1) Is the new node value greater or smaller than the current node?
+
+2 )If the value of the new node is greater than the current node,
+go to the right subtree. If the current node doesn’t have a right child,
+insert it there, or else backtrack to step #1.
+
+3) If the value of the new node is smaller than the current node, go
+to the left subtree. If the current node doesn’t have a left child,
+insert it there, or else backtrack to step #1.
+
+4) We did not handle special cases here. When the value of a new node is
+equal to the current value of the node, use rule number 3.
+Consider inserting equal values to the left side of the subtree.
+*/
+func (n *Node) BinarySeachTreeInsert(value int) {
+	if value > n.Value {
+		if n.Right != nil {
+			n.Right.BinarySeachTreeInsert(value)
+		} else {
+			fmt.Println("Right Side inserting")
+			newNode := Node{
+				Value: value,
+			}
+			n.Right = &newNode
+		}
+	} else if value <= n.Value { 
+		if n.Left != nil {
+			n.Left.BinarySeachTreeInsert(value)
+		} else {
+			newNode := Node{
+				Value: value,
+			}
+			n.Left = &newNode
+		}
+	}
+}
+
 func main() {
 	t := &Tree{
 		Root: &Node{
