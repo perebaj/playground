@@ -185,3 +185,41 @@ func TestPreorder(t *testing.T) {
 		t.Errorf("Expected %s, got %s", expected, out)
 	}
 }
+
+func TestBinarySearchTreeInsert(t *testing.T) {
+	tree := Tree{
+		Root: &Node{
+			Value: 50,
+		},
+	}
+
+	want := 52
+	tree.Root.BinarySeachTreeInsert(want)
+
+	if tree.Root.Value != 50 {
+		t.Error(ErrInvalidNode)
+	}
+
+	got := tree.Root.Right.Value
+	if got != want {
+		t.Errorf("Unexpeted value, want %d | got %d", want, got)
+	}
+
+	want = 51
+	tree.Root.BinarySeachTreeInsert(51)
+
+	got = tree.Root.Right.Left.Value
+
+	if got != want {
+		t.Errorf("Unexpeted value, want %d | got %d", want, got)
+	}
+
+	want = 50
+	tree.Root.BinarySeachTreeInsert(want)
+
+	got = tree.Root.Left.Value
+
+	if got != want {
+		t.Errorf("Unexpeted value, want %d | got %d", want, got)
+	}
+}
