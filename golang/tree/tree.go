@@ -105,7 +105,7 @@ func (n *Node) BinarySeachTreeInsert(value int) {
 			}
 			n.Right = &newNode
 		}
-	} else if value <= n.Value { 
+	} else if value <= n.Value {
 		if n.Left != nil {
 			n.Left.BinarySeachTreeInsert(value)
 		} else {
@@ -115,6 +115,21 @@ func (n *Node) BinarySeachTreeInsert(value int) {
 			n.Left = &newNode
 		}
 	}
+}
+
+func (n *Node) valueExists(value int) bool {
+	if n == nil {
+		return false
+	}
+	if value > n.Value {
+		return n.Right.valueExists(value)
+	} else if value < n.Value {
+		return n.Left.valueExists(value)
+	} else if value == n.Value {
+		return true
+	}
+	fmt.Println("and loop")
+	return false
 }
 
 func main() {

@@ -223,3 +223,39 @@ func TestBinarySearchTreeInsert(t *testing.T) {
 		t.Errorf("Unexpeted value, want %d | got %d", want, got)
 	}
 }
+
+func TestValueExists(t *testing.T) {
+	tree := Tree{
+		Root: &Node{
+			Value: 52,
+		},
+	}
+
+	tree.Root.BinarySeachTreeInsert(53)
+	tree.Root.BinarySeachTreeInsert(40)
+	// tree.Root.BinarySeachTreeInsert(35)
+	// tree.Root.BinarySeachTreeInsert(43)
+	// tree.Root.BinarySeachTreeInsert(60)
+
+	ok := tree.Root.valueExists(40)
+
+	if !ok {
+		t.Error("Expecting that the value exists")
+	}
+
+	ok = tree.Root.valueExists(100)
+	if ok {
+		t.Error("Expecting that the value doens't exists")
+	}
+
+	//nil tree
+
+	tree2 := Tree{
+		Root: &Node{},
+	}
+
+	ok = tree2.Root.valueExists(10)
+	if ok {
+		t.Error("Passing nil Tree, expecting false")
+	}
+}
