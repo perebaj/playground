@@ -124,11 +124,8 @@ func (n *Node) valueExists(value int) bool {
 		return n.Right.valueExists(value)
 	} else if value < n.Value {
 		return n.Left.valueExists(value)
-	} else if value == n.Value {
-		return true
 	}
-	fmt.Println("and loop")
-	return false
+	return true
 }
 
 func main() {
