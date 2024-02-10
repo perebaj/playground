@@ -15,14 +15,20 @@ func main() {
 	}
 }
 
-func PostHandler(w http.ResponseWriter, r *http.Request) {
+func HelloHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprint(w, "Hello, World!")
+}
+
+func IdHandler(w http.ResponseWriter, r *http.Request) {
+	v := r.PathValue("id")
+	fmt.Fprintf(w, "id: %s", v)
 }
 
 // http patterns: https://pkg.go.dev/net/http#hdr-Patterns
 func Router() *http.ServeMux {
 	mux := http.NewServeMux()
 
-	mux.HandleFunc("GET /", PostHandler)
+	mux.HandleFunc("GET /", HelloHandler)
+	mux.HandleFunc("GET /id/{id}", IdHandler)
 	return mux
 }

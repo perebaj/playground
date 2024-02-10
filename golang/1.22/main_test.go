@@ -48,3 +48,24 @@ func TestRouter(t *testing.T) {
 		t.Errorf("expected Hello, World!, got %s", w.Body.String())
 	}
 }
+
+func TestRouterWithID(t *testing.T) {
+	mux := Router()
+
+	if mux == nil {
+		t.Error("mux is nil")
+	}
+
+	w := httptest.NewRecorder()
+	req := httptest.NewRequest("GET", "/id/1", nil)
+
+	mux.ServeHTTP(w, req)
+
+	if w.Code != 200 {
+		t.Errorf("expected 200, got %d", w.Code)
+	}
+
+	if w.Body.String() != "id: 1" {
+		t.Errorf("expected id: 1, got %s", w.Body.String())
+	}
+}
