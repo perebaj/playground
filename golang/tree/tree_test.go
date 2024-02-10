@@ -4,6 +4,7 @@ import (
 	"errors"
 	"io"
 	"os"
+	"slices"
 	"testing"
 )
 
@@ -257,5 +258,35 @@ func TestValueExists(t *testing.T) {
 	ok = tree2.Root.valueExists(10)
 	if ok {
 		t.Error("Passing nil Tree, expecting false")
+	}
+}
+
+func TestInorderSlice(t *testing.T) {
+	// temp := make([]int, 10)
+
+	tree := &Tree{
+		Root: &Node{
+			Value: 1,
+		},
+	}
+
+	tree.Root.InsertLeft(2)
+	tree.Root.InsertRight(5)
+
+	node2 := tree.Root.Left
+	node5 := tree.Root.Right
+
+	node2.InsertLeft(3)
+	node2.InsertRight(4)
+
+	node5.InsertLeft(6)
+	node5.InsertRight(7)
+
+	want := []int{3, 2, 4, 1, 6, 5, 7}
+
+	got := inorderSlice(tree.Root)
+
+	if !slices.Equal(want, got) {
+		t.Errorf("want %v | got %v", want, got)
 	}
 }

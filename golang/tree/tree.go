@@ -128,6 +128,16 @@ func (n *Node) valueExists(value int) bool {
 	return true
 }
 
+func inorderSlice(n *Node) []int {
+	var resp []int
+	if n != nil {
+		resp = append(resp, inorderSlice(n.Left)...)
+		resp = append(resp, n.Value)
+		resp = append(resp, inorderSlice(n.Right)...)
+	}
+	return resp
+}
+
 func main() {
 	t := &Tree{
 		Root: &Node{
