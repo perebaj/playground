@@ -7,4 +7,5 @@ use (
 	./golang/httpmetrics
 	./golang/linkedlist
 	./golang/postgres
+	./golang/1.22
 )
