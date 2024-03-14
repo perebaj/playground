@@ -2,10 +2,10 @@ go 1.22.0
 
 use (
 	./golang
+	./golang/1.22
 	./golang/api_test
 	./golang/authentication
 	./golang/httpmetrics
 	./golang/linkedlist
 	./golang/postgres
-	./golang/1.22
 )
