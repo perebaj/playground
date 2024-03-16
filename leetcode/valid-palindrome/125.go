@@ -47,3 +47,11 @@ func convert(s string) string {
 
 	return resp
 }
+
+/*
+Here I learned something new about non-alpanumeric and alphanumir, it's essencial to solve it!
+and also, the unicode library
+
+alphanumeric contempalte all letters and digits
+
+*/
