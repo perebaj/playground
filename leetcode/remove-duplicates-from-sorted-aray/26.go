@@ -28,10 +28,9 @@ func removeDuplicates(nums []int) int {
 	return total
 }
 
-
 /*
-My first attempt implementing this function was trying to switch the elements
-But the trick here, is think that you
+Two pointer approach is the better way to solve it
+one pointer will point to the last unic elemet that was inserte, and the other one will walk through the array, trying to find different elements
 */
 func removeDuplicates2(nums []int) int {
 	// var total int
