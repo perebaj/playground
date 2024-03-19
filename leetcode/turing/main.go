@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"reflect"
+	"slices"
 )
 
 func main() {
@@ -16,32 +17,49 @@ func main() {
 	sub = [][]int{
 		{88},
 		{15},
+		{88},
 	}
 	fmt.Println(solution(mainValue, sub))
 }
 
 func solution(mainValue []int, sub [][]int) bool {
-	m := make(map[int]int)
-	for _, v := range mainValue {
-		m[v]++
-	}
-
-	for k, v := range sub {
-		if len(v) > 1 && !reflect.DeepEqual(mainValue[k:len(sub)], sub) {
-			fmt.Println("primeiro caso")
-			return false
+	for _, v := range sub {
+		if len(v) > 1 {
+			b, start, end := containsSubArray(mainValue, v)
+			if b {
+				mainValue = slices.Delete(mainValue, start, end)
+			}
 		} else {
-			fmt.Println("segundo caso")
-			_, ok := m[v[0]]
-			if !ok {
-				fmt.Println("segundo.1 caso")
-				return false
-			} else {
-				fmt.Println("segundo.2 caso")
-				continue
+			ok, index := contains(mainValue, v[0])
+			if ok {
+				mainValue = slices.Delete(mainValue, index, index+1)
 			}
 		}
 	}
+	return len(mainValue) == 0
+}
 
-	return true
+func contains(s []int, target int) (bool, int) {
+	for k, v := range s {
+		if v == target {
+			return true, k
+		}
+	}
+	return false, -1
+}
+
+func containsSubArray(mainSlice []int, subSlice []int) (bool, int, int) {
+	start := 0
+	end := len(subSlice)
+	// 0/
+	for end <= len(mainSlice) {
+		if !reflect.DeepEqual(mainSlice[start:end], subSlice) {
+			start++
+			end++
+		} else {
+			return true, start, end
+		}
+	}
+
+	return false, start, end
 }
