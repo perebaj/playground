@@ -138,6 +138,21 @@ func inorderSlice(n *Node) []int {
 	return resp
 }
 
+// func bfs(n *Node) {
+// 	var queue []Node
+// 	// queue = append(queue, *n)
+// 	for len(queue) > 0 {
+// 		currentNode := queue[0]
+// 		queue = queue[1:] // remove the first element
+// 		fmt.Println(currentNode.Value)
+// 		if currentNode.Left != nil {
+// 			queue = append(queue, *currentNode.Left)
+
+// 		}
+// 	}
+
+// }
+
 func main() {
 	t := &Tree{
 		Root: &Node{
