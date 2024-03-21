@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"reflect"
 	"slices"
+	"strconv"
 )
 
 func main() {
@@ -20,6 +21,11 @@ func main() {
 		{88},
 	}
 	fmt.Println(solution(mainValue, sub))
+
+	min := 15
+	max := 25
+
+	fmt.Println(solution2(min, max))
 }
 
 func solution(mainValue []int, sub [][]int) bool {
@@ -62,4 +68,33 @@ func containsSubArray(mainSlice []int, subSlice []int) (bool, int, int) {
 	}
 
 	return false, start, end
+}
+
+func solution2(m int, n int) int {
+	mapp := make(map[int]int)
+	for i := m; i <= n; i++ {
+		numStr := strconv.Itoa(i)
+		sumN := Summ(numStr)
+		mapp[sumN]++
+	}
+
+	fmt.Println(mapp)
+	var sSlice []int
+	for _, v := range mapp {
+		sSlice = append(sSlice, v)
+	}
+
+	resp := slices.Max(sSlice)
+
+	return resp
+}
+
+func Summ(numStr string) int {
+	var sum int
+	for _, v := range numStr {
+		value, _ := strconv.Atoi(string(v))
+		sum = sum + value
+	}
+
+	return sum
 }
