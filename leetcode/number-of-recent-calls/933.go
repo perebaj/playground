@@ -13,6 +13,7 @@ func Constructor() RecentCounter {
 func (this *RecentCounter) Ping(t int) int {
 	this.requests = append(this.requests, t)
 	rangeSlice := Range(t)
+	fmt.Println(rangeSlice, this.requests)
 	var counter int
 	for _, v := range this.requests {
 		if v >= rangeSlice[0] && v <= rangeSlice[1] {
