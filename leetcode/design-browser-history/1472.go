@@ -12,18 +12,18 @@ type DoublyLinkedList struct {
 	tail *Node
 }
 
-func (d *DoublyLinkedList) AddNode(page string) {
+func (b *BrowserHistory) AddNode(page string) {
 	node := Node{
 		value: page,
 	}
-	node.next = d.head.next
-	node.prev = d.head
-	d.head.next.prev = &node
-	d.head.next = &node
+	node.next = b.Chain.head.next
+	node.prev = b.Chain.head
+	b.Chain.head.next.prev = &node
+	b.Chain.head.next = &node
 }
 
-func (d *DoublyLinkedList) Traverse() {
-	current := d.head
+func (b *BrowserHistory) Traverse() {
+	current := b.Chain.head
 	for current != nil {
 		fmt.Println("traverse", current.value)
 		current = current.next
@@ -67,10 +67,10 @@ func Constructor(homepage string) BrowserHistory {
 func main() {
 	n := Constructor("teste")
 
-	n.Chain.AddNode("jojo.com")
-	n.Chain.AddNode("ondehj.com")
+	n.AddNode("jojo.com")
+	n.AddNode("ondehj.com")
 
 	fmt.Println(n.Chain.head.next.value)
 	fmt.Println(n.Chain.head.next.next.value)
-	n.Chain.Traverse()
+	n.Traverse()
 }
