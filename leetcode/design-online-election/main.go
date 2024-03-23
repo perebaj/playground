@@ -10,6 +10,15 @@ type TopVotedCandidate struct {
 	sortedTimes     []int
 }
 
+/*
+Complexity Analysis
+
+first for: O(N) where N is the size of persons array
+second for to store all the times in a slice: O(N)
+sort the times: O(NlogN)
+
+I.e: O(N) + O(N) + O(NlogN), approximately O(NlogN)
+*/
 func Constructor(persons []int, times []int) TopVotedCandidate {
 	maxVotes := -1
 	m := make(map[int]int)  // person -> votes frequency ex: 1:2, 2:3. Id 1 has 2 votes, id 2 has 3 votes
@@ -20,7 +29,6 @@ func Constructor(persons []int, times []int) TopVotedCandidate {
 		if m[persons[i]] >= maxVotes {
 			maxVotes = m[persons[i]]
 			m2[times[i]] = persons[i]
-			// leader = persons[i]
 		}
 	}
 
@@ -39,6 +47,9 @@ func Constructor(persons []int, times []int) TopVotedCandidate {
 
 }
 
+/*
+	Time to search the target element in a sorted array: O(logN)
+*/
 func (top *TopVotedCandidate) Q(t int) int {
 	// var result []int
 
@@ -53,6 +64,14 @@ func (top *TopVotedCandidate) Q(t int) int {
 	return top.timePersonIdMap[top.sortedTimes[val-1]]
 }
 
+
+/*
+Final complexity analysis
+the constructor has O(NlogN) complexity
+the query has O(logN) complexity
+
+I.e: O(NlogN) + O(logN) = O(NlogN)
+*/
 func main() {
 	person := []int{0, 1, 1, 0, 0, 1, 0}
 	times := []int{0, 5, 10, 15, 20, 25, 30}
