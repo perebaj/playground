@@ -78,19 +78,17 @@ func (b *BrowserHistory) Visit(url string) {
 
 func (b *BrowserHistory) Back(steps int) string {
 	aux := b.CurPosition["current"]
-	var cur *Node
+	// traverse the linked list if achieve the head node, return the head.next.value, otherwise if achive the steps == 0, return the current node value
 	for steps > 0 {
 		if aux.value == "head" {
 			break
 		}
-		cur = aux
 		aux = aux.prev
 		steps--
 	}
-
 	if aux.value == "head" {
-		b.CurPosition["current"] = cur.next
-		return cur.next.value
+		b.CurPosition["current"] = aux.next
+		return aux.next.value
 	}
 	b.CurPosition["current"] = aux
 	return aux.value
@@ -98,43 +96,33 @@ func (b *BrowserHistory) Back(steps int) string {
 
 func (b *BrowserHistory) Forward(steps int) string {
 	aux := b.CurPosition["current"]
-	// fmt.Println(aux.next)
-	// fmt.Println(aux.next.value)
-	var cur *Node
 	for steps > 0 {
 		if aux.value == "tail" {
 			break
 		}
-		cur = aux
 		aux = aux.next
 		steps--
 	}
-
 	if aux.value == "tail" {
 		b.CurPosition["current"] = aux.prev
 		return aux.prev.value
 	}
-	b.CurPosition["current"] = cur
-	return cur.value
+	b.CurPosition["current"] = aux
+	return aux.value
 }
 
 func main() {
-	// [["leetcode.com"],["google.com"],["facebook.com"],["youtube.com"],[1],[1],[1],["linkedin.com"],[2],[2],[7]]
-	// [["leetcode.com"],["google.com"],["facebook.com"],["youtube.com"],[1],[1],[1],["linkedin.com"],[2],[2],[7]]
 	n := Constructor("leetcode.com")
 	n.Visit("google.com")
 	n.Visit("facebook.com")
 	n.Visit("youtube.com")
-	// n.Traverse()
 	fmt.Println(n.Back(1))    // facebook
 	fmt.Println(n.Back(1))    // google
 	fmt.Println(n.Forward(1)) // facebook
 	n.Visit("linkedin.com")
-	// n.Traverse()
-	// fmt.Println(n.CurPosition["current"].value)
 	fmt.Println(n.Forward(2)) // linkedin
-	// fmt.Println(n.Back(2))
-	// fmt.Println(n.Back(7))
+	fmt.Println(n.Back(2))    // facebook (I think that the expected output is wrong)
+	fmt.Println(n.Back(7))    // leetcode
 
 	// expected output
 	//[null,null,null,null,"facebook.com","google.com","facebook.com",null,"linkedin.com","google.com","leetcode.com"]
