@@ -71,6 +71,7 @@ func main() {
 	n.CheckOut(5, "Paradise", 16)
 	fmt.Println(n.CheckInMap, n.CheckOutMap)
 	fmt.Println(n.GetAverageTime("Leyton", "Paradise")) // return 5.50000, (5 + 6) / 2 = 5.5
+
 	// n.CheckIn(1, "ocz", 10)
 	// n.CheckOut(1, "parapua", 20)
 	// n.GetAverageTime("ocz", "parapua")
