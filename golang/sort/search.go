@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"slices"
 	"sort"
 )
 
@@ -27,4 +28,21 @@ func sortSearch() {
 
 	fmt.Println(array2[index])
 	fmt.Println(array[index2])
+}
+
+func Index() int {
+	array := []int{1, 2, 3, 4, 5, 6, 7, 8, 9}
+	index := slices.Index(array, 1) // 0
+
+	return index
+
+}
+
+func Constructor(arr []int) {
+	indexMap := make(map[int][]int)
+	for i, num := range arr {
+		indexMap[num] = append(indexMap[num], i)
+	}
+
+	fmt.Println(indexMap)
 }
