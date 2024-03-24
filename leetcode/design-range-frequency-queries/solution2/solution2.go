@@ -42,6 +42,12 @@ func (r *RangeFreqQuery) Query(left int, right int, value int) int {
 }
 
 func main() {
+	/*
+		Cmplexity analysis:
+		Constructor: O(n). Memory O(n)
+		Query: 2 * O(log n) approximately O(log n). Memory O(1)
+	*/
+
 	array := []int{12, 33, 4, 56, 22, 2, 34, 33, 22, 12, 34, 56}
 	n := Constructor(array)
 	fmt.Println(n.Frequency)
