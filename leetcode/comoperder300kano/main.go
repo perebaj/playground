@@ -5,6 +5,16 @@ import (
 	"sort"
 )
 
+type DB struct {
+	InMemory map[string]interface{}
+}
+
+func NewDB() DB {
+	return DB{
+		InMemory: make(map[string]interface{}),
+	}
+}
+
 type A struct {
 	Value string
 }
