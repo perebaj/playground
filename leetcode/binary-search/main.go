@@ -3,8 +3,10 @@ package main
 import "fmt"
 
 func main() {
-	nums := []int{1, 2, 3, 4, 5, 6, 8, 9, 9, 11}
+	nums := []int{1, 2, 2, 2, 2, 2, 2, 4, 4, 5, 6}
 	fmt.Println(binarySearch(nums, 2))
+
+	fmt.Println(binarySearchLowerBound(nums, 2)) // 1
 }
 
 func binarySearch(nums []int, target int) int {
@@ -25,4 +27,37 @@ func binarySearch(nums []int, target int) int {
 	}
 
 	return index
+}
+
+// return the first ocurrence where target should be put
+func binarySearchLowerBound(nums []int, target int) int {
+	left := 0
+	right := len(nums)
+	for left < right {
+		middle := (left + right) / 2
+		if nums[middle] < target { // true value
+			left = middle + 1
+		} else {
+			// left = middle + 1
+			right = middle
+		}
+	}
+
+	return left
+}
+
+func binarySearchUpperBound(nums []int, target int) int {
+	left := 0
+	right := len(nums)
+	for left < right {
+		middle := (left + right) / 2
+		if nums[middle] <= target { // true value
+			left = middle + 1
+		} else {
+			// left = middle + 1
+			right = middle
+		}
+	}
+
+	return left
 }
