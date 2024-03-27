@@ -7,6 +7,10 @@ import (
 
 func main() {
 	fmt.Println(longestCommonPrefix([]string{"flower", "flow", "flight"}))
+	example := []string{"joclaudio", "jonathan", "jonao", "jonatas"}
+	sort.Strings(example)
+	fmt.Println(example)
+
 }
 
 func longestCommonPrefix(strs []string) string {
