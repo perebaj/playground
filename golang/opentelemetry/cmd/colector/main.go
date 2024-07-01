@@ -10,16 +10,15 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"net/http"
 	"os"
 	"os/signal"
 	"time"
 
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
-
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/attribute"
-	"go.opentelemetry.io/otel/exporters/otlp/otlpmetric/otlpmetricgrpc"
+	"go.opentelemetry.io/otel/exporters/otlp/otlpmetric/otlpmetrichttp"
 	"go.opentelemetry.io/otel/metric"
 	sdkmetric "go.opentelemetry.io/otel/sdk/metric"
 	"go.opentelemetry.io/otel/sdk/resource"
@@ -28,25 +27,31 @@ import (
 
 var serviceName = semconv.ServiceNameKey.String("test-service")
 
-// Initialize a gRPC connection to be used by both the tracer and meter
-// providers.
-func initConn() (*grpc.ClientConn, error) {
-	// It connects the OpenTelemetry Collector through local gRPC connection.
-	// You may replace `localhost:4317` with your endpoint.
-	conn, err := grpc.NewClient("localhost:4317",
-		// Note the use of insecure transport here. TLS is recommended in production.
-		grpc.WithTransportCredentials(insecure.NewCredentials()),
-	)
-	if err != nil {
-		return nil, fmt.Errorf("failed to create gRPC connection to collector: %w", err)
-	}
+// // Initialize a gRPC connection to be used by both the tracer and meter
+// // providers.
+// func initConn() (*grpc.ClientConn, error) {
+// 	// It connects the OpenTelemetry Collector through local gRPC connection.
+// 	// You may replace `localhost:4317` with your endpoint.
+// 	conn, err := grpc.NewClient("localhost:4317",
+// 		// Note the use of insecure transport here. TLS is recommended in production.
+// 		grpc.WithTransportCredentials(insecure.NewCredentials()),
+// 	)
+// 	if err != nil {
+// 		return nil, fmt.Errorf("failed to create gRPC connection to collector: %w", err)
+// 	}
 
-	return conn, err
-}
+// 	return conn, err
+// }
 
 // Initializes an OTLP exporter, and configures the corresponding meter provider.
-func initMeterProvider(ctx context.Context, res *resource.Resource, conn *grpc.ClientConn) (func(context.Context) error, error) {
-	metricExporter, err := otlpmetricgrpc.New(ctx, otlpmetricgrpc.WithGRPCConn(conn))
+func initMeterProvider(ctx context.Context, res *resource.Resource) (func(context.Context) error, error) {
+	metricExporter, err := otlpmetrichttp.New(
+		ctx,
+		// otlpmetrichttp.WithEndpoint("/metrics"),
+		otlpmetrichttp.WithEndpointURL("http://localhost:4318/metrics"),
+		otlpmetrichttp.WithInsecure(),
+	)
+	// metricExporter, err := otlpmetricgrpc.New(ctx, otlpmetricgrpc.WithGRPCConn(conn))
 	if err != nil {
 		return nil, fmt.Errorf("failed to create metrics exporter: %w", err)
 	}
@@ -66,10 +71,10 @@ func main() {
 	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt)
 	defer cancel()
 
-	conn, err := initConn()
-	if err != nil {
-		log.Fatal(err)
-	}
+	// conn, err := initConn()
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
 
 	res, err := resource.New(ctx,
 		resource.WithAttributes(
@@ -81,7 +86,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	shutdownMeterProvider, err := initMeterProvider(ctx, res, conn)
+	shutdownMeterProvider, err := initMeterProvider(ctx, res)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -92,6 +97,22 @@ func main() {
 	}()
 
 	meter := otel.Meter("test-meter")
+
+	srvMetrics := &http.Server{
+		Addr: ":4318",
+		// Handler: newHTTPHandler(),
+	}
+
+	mux := http.NewServeMux()
+	mux.Handle("/metrics", promhttp.Handler())
+
+	srvMetrics.Handler = mux
+
+	srvErr := make(chan error, 1)
+	go func() {
+		log.Printf("Starting metrics server on :4318")
+		srvErr <- srvMetrics.ListenAndServe()
+	}()
 
 	// Attributes represent additional key-value descriptors that can be bound
 	// to a metric observer or recorder.
@@ -113,5 +134,12 @@ func main() {
 		<-time.After(time.Second)
 	}
 
-	log.Printf("Done!")
+	// create a srv in the port 4318 to receive the metrics
+
+	select {
+	case err = <-srvErr:
+		return
+	case <-ctx.Done():
+		cancel()
+	}
 }
