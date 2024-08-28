@@ -33,3 +33,10 @@ func Fetch(url string) (string, error) {
 
 	return bodyString, nil
 }
+
+type fn func() string
+
+func tmp(fn) {
+	s := fn()
+	fmt.Println(fn())
+}
