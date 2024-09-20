@@ -1,0 +1,8 @@
+services:
+  service1:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    volumes:
+      - .:/app
+    command: poetry run fastapi run main.py --host 0.0.0.0 --port 8000
