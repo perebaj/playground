@@ -2,9 +2,8 @@ name: service1 CI
 
 on:
   push:
-    paths:
-      - 'python/services-example/service1/**'
-  pull_request:
+    branches:
+      - main
     paths:
       - 'python/services-example/service1/**'
 
