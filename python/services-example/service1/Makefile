@@ -10,4 +10,8 @@ lint:
 
 .PHONY: test
 test:
-	poetry run pytest .
+	poetry run pytest . --ignore=tests/integration
+
+.PHONY: integration-test
+integration-test:
+	poetry run pytest tests/integration
