@@ -4,9 +4,6 @@ on:
   push:
     paths:
       - 'python/services-example/service1/**'
-  pull_request:
-    paths:
-      - 'python/services-example/service1/**'
 
 jobs:
   lint-and-test:
