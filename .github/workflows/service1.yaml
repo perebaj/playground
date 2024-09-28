@@ -37,3 +37,9 @@ jobs:
           make lint
           make fmt
           make test
+
+      - name: Create Docker network for running testcontainers
+        run: docker network create testcontainers
+
+      - name: Run integration tests
+        run: make integration-test
