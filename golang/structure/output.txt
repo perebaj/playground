@@ -1,0 +1,17 @@
+.
+├── Dockerfile
+├── Makefile
+├── api
+│   └── docs
+├── cmd
+│   └── appname
+│       └── main.go
+├── compose.yaml
+├── firestore
+├── output.txt
+├── postgres
+│   └── migrations
+└── pubsub
+    └── pubsub.go
+
+9 directories, 6 files
