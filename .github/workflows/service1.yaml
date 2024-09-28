@@ -4,9 +4,6 @@ on:
   push:
     paths:
       - 'python/services-example/service1/**'
-  pull_request:
-    paths:
-      - 'python/services-example/service1/**'
 
 jobs:
   lint-and-test:
@@ -37,3 +34,9 @@ jobs:
           make lint
           make fmt
           make test
+
+      - name: Create Docker network for running testcontainers
+        run: docker network create testcontainers
+
+      - name: Run integration tests
+        run: make integration-test
