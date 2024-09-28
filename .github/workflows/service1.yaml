@@ -3,28 +3,17 @@ name: service1 CI
 on:
   push:
     paths:
-      - 'python/services-example/**'
+      - 'python/services-example/service1/**'
   pull_request:
     paths:
-      - 'python/services-example/**'
+      - 'python/services-example/service1/**'
 
 jobs:
-  determine-service:
-    runs-on: ubuntu-latest
-    outputs:
-      service: ${{ steps.set-services.outputs.services }}
-    steps:
-      - uses: actions/checkout@v4
-      - id: set-services
-        run: |
-          SERVICES=$(ls -d python/services-example/service* | jq -R -s -c 'split("\n")[:-1]')
-          echo "services=$SERVICES" >> $GITHUB_OUTPUT
-
   lint-and-test:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ${{ matrix.service }}
+        working-directory: python/services-example/service1
 
     steps:
       - name: Checkout code
