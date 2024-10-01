@@ -22,8 +22,6 @@ jobs:
       run: curl -sSL https://install.python-poetry.org | python3 -
     - name: Configure Poetry
       run: poetry config virtualenvs.create false
-    - name: Install dependencies
-      run: poetry install
     - name: Authenticate to Google Cloud
       uses: google-github-actions/auth@v0.4.0
       with:
