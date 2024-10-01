@@ -1,20 +1,15 @@
 [tool.poetry]
-name = "service1"
+name = "service3"
 version = "0.1.0"
 description = ""
 authors = ["perebaj <perebaj@gmail.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.9"
-flake8 = "^7.1.1"
-black = "^24.8.0"
+python = "3.9.13"
 isort = "^5.13.2"
-pytest = "^8.3.3"
-mypy = "^1.11.2"
-testcontainers = {extras = ["postgres"], version = "^4.8.1"}
-psycopg2-binary = "^2.9.9"
-sqlalchemy = "^2.0.35"
+flake8 = "^7.1.1"
+tino-flow-consumer = {version = "0.137.0", source = "gcp"}
 
 
 [[tool.poetry.source]]
@@ -25,9 +20,3 @@ priority = "supplemental"
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
-
-[tool.isort]
-line_length = 120
-
-[tool.black]
-line-length = 120
