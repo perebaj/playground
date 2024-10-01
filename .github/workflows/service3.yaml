@@ -1,11 +1,16 @@
 name: CI
 
-on: [push]
+on:
+  push:
+    paths:
+      - 'python/services-example/service3/**'
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: python/services-example/service3
 
     steps:
     - uses: actions/checkout@v4
