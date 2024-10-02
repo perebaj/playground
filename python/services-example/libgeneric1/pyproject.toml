@@ -1,19 +1,18 @@
 [tool.poetry]
-name = "service3"
-version = "0.1.0"
+name = "libgeneric1"
+version = "0.4.0"
 description = ""
 authors = ["perebaj <perebaj@gmail.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "3.9.13"
-isort = "^5.13.2"
-flake8 = "^7.1.1"
-libgeneric1 = {version = "^0.4.0", source = "gcp"}
+
 
 [[tool.poetry.source]]
 name = "gcp"
-url = "https://us-central1-python.pkg.dev/blup-432616/libtest/simple"
+url = "https://us-central1-python.pkg.dev/blup-432616/libtest"
+priority = "supplemental"
 
 [build-system]
 requires = ["poetry-core"]

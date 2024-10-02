@@ -17,5 +17,5 @@ integration-test:
 
 .PHONY: poetry-config
 poetry-config:
-	poetry config repositories.gcp https://us-python.pkg.dev/truepay-tools/python/simple/
+	poetry config repositories.gcp https://us-central1-python.pkg.dev/blup-432616/libtest/simple
 	poetry config http-basic.gcp oauth2accesstoken $$(gcloud auth print-access-token)
