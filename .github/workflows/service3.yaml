@@ -27,8 +27,8 @@ jobs:
       with:
         credentials_json: ${{ secrets.GCP_CREDENTIALS }}
     - name: Configure gcloud CLI
-      run: gcloud config set project truepay-tools
-    # - name: setup poetry
-    #   run: make poetry-config
+      run: gcloud config set project blup-432616
+    - name: setup poetry
+      run: make poetry-config
     - name: Install dependencies
       run: poetry install
