@@ -6,14 +6,44 @@ import (
 )
 
 func main() {
-	array := []int{12, 3, 1, 2, -6, 5, -8, 6}
-	targetSum := 0
-	result := ThreeNumberSum(array, targetSum)
+	array := []int{1, 2, 3}
+	targetSum := 6
+	result := ThreeNumberSum2(array, targetSum)
 	fmt.Println(result)
 }
 
+func ThreeNumberSum2(array []int, target int) [][]int {
+	sort.Ints(array)
+	var result [][]int
+	if len(array) < 3 {
+		return result
+	}
+	end := len(array) - 1
+	for i := 0; i < len(array)-3; i++ {
+		green := i + 1
+		blue := end - 1
+		for {
+			sum := array[i] + array[green] + array[blue]
+			fmt.Println(sum)
+			if sum == target {
+				result = append(result, []int{array[i], array[green], array[blue]})
+			}
+			blue--
+			if green == end {
+				break
+			}
+
+			if green == blue {
+				green++
+				blue = end
+			}
+		}
+	}
+	return result
+}
+
 // Não está correto, mas foi minha primeira ideia. Algumas solucões interessantes que encontrei aqui
-func ThreeNumberSum(array []int, target int) [][]int{
+func ThreeNumberSum(array []int, target int) [][]int {
 	m1 := make(map[int]int)
 
 	for _, v := range array {
