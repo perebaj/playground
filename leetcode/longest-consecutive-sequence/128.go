@@ -3,8 +3,8 @@ package main
 import "fmt"
 
 func main() {
-	nums := []int{-7, 2, -3, 8, 9, 0, 8, 4, -5, 8, -5, -5, 1, 6, 4}
-	fmt.Println(longestConsecutive(nums))
+	nums := []int{0, 3, 7, 2, 5, 8, 4, 6, 0, 1}
+	fmt.Println(longestConsecutive2(nums))
 }
 
 func longestConsecutive(nums []int) int {
@@ -44,4 +44,32 @@ func longestConsecutive(nums []int) int {
 	}
 
 	return result
+}
+
+func longestConsecutive2(nums []int) int {
+	m := make(map[int]bool)
+
+	for _, v := range nums {
+		m[v] = false
+	}
+
+	fmt.Println(m)
+	var max int
+	for k, _ := range m {
+		var aux int
+		for i := 0; i <= len(m)+1; i++ {
+			_, ok := m[k+i]
+			fmt.Println("OK:", ok)
+			fmt.Println("Val: and index", k, i)
+			if !ok {
+				if aux > max {
+					max = aux
+					fmt.Println("MAX:", max)
+				}
+				break
+			}
+			aux++
+		}
+	}
+	return max
 }
