@@ -17,6 +17,11 @@ psycopg2-binary = "^2.9.9"
 sqlalchemy = "^2.0.35"
 
 
+[[tool.poetry.source]]
+name = "gcp"
+url = "https://us-python.pkg.dev/truepay-tools/python/simple"
+priority = "supplemental"
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"

@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "service3"
+version = "0.1.0"
+description = ""
+authors = ["perebaj <perebaj@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "3.9.13"
+isort = "^5.13.2"
+flake8 = "^7.1.1"
+libgeneric1 = {version = "^0.4.0", source = "gcp"}
+keyrings-google-artifactregistry-auth = "^1.1.2"
+
+[[tool.poetry.source]]
+name = "gcp"
+url = "https://us-central1-python.pkg.dev/blup-432616/libtest/simple"
+# important to not use the gcp artifact registry as the source. To install from the gcp artifact registry, poetry add --source gcp librayname
+priority = "supplemental"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

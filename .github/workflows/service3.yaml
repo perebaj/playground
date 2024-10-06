@@ -1,0 +1,34 @@
+name: CI
+
+on:
+  push:
+    paths:
+      - 'python/services-example/service3/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: python/services-example/service3
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9.13'
+    - name: Install Poetry
+      run: curl -sSL https://install.python-poetry.org | python3 -
+    - name: Configure Poetry
+      run: poetry config virtualenvs.create false
+    - name: Authenticate to Google Cloud
+      uses: google-github-actions/auth@v0.4.0
+      with:
+        credentials_json: ${{ secrets.GCP_CREDENTIALS }}
+    - name: Configure gcloud CLI
+      run: gcloud config set project blup-432616
+    - name: setup poetry
+      run: make poetry-config
+    - name: Install dependencies
+      run: poetry install
