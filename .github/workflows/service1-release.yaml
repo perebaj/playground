@@ -1,0 +1,46 @@
+name: Service1 CI Release
+
+on:
+  push:
+    tags:
+      - 'service1-v*'
+
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: python/services-example/service1
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+
+      - name: Install Poetry
+        run: |
+          curl -sSL https://install.python-poetry.org | python3 -
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+
+      - name: Install dependencies
+        run: poetry install --no-root
+
+      - name: lint-format-test
+        run: |
+          make lint
+          make fmt
+          make test
+
+      - name: Create Docker network for running testcontainers
+        run: docker network create testcontainers
+
+      - name: Run integration tests
+        run: make integration-test
+
+      - name: Build and push Docker image
+        run: |
+          echo "building and pushing Docker image"
