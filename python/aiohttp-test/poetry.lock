@@ -137,6 +137,17 @@ files = [
 frozenlist = ">=1.1.0"
 
 [[package]]
+name = "asynctest"
+version = "0.13.0"
+description = "Enhance the standard unittest package with features for testing asyncio libraries"
+optional = false
+python-versions = ">=3.5"
+files = [
+    {file = "asynctest-0.13.0-py3-none-any.whl", hash = "sha256:5da6118a7e6d6b54d83a8f7197769d046922a44d2a99c21382f0a6e4fadae676"},
+    {file = "asynctest-0.13.0.tar.gz", hash = "sha256:c27862842d15d83e6a34eb0b2866c323880eb3a75e4485b079ea11748fd77fac"},
+]
+
+[[package]]
 name = "attrs"
 version = "24.2.0"
 description = "Classes Without Boilerplate"
@@ -663,4 +674,4 @@ propcache = ">=0.2.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "3.12.5"
-content-hash = "23739e7a9cab1800a8ced70cfec7742866d4094378329089616a54796fbd007f"
+content-hash = "791db3da6bab03bb610dfe523111072c8875049509d6e5ff5d8e63f66f7d45bf"
