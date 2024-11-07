@@ -1,6 +1,5 @@
 from unittest.mock import patch, MagicMock
 import pytest
-from
 from xaiohttp import fetch
 
 
@@ -15,4 +14,6 @@ async def test_fetch(mock_get: MagicMock):
     mock_get.return_value.__aenter__.return_value.headers = {'content-type': 'text/html'}
 
     status, headers = await fetch()
-    print(status, headers)
+
+    assert status == 200
+    assert headers == 'text/html'
