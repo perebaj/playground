@@ -1,4 +1,4 @@
-package main
+package adventofcode24
 
 import (
 	"bufio"
@@ -10,12 +10,23 @@ import (
 	"strconv"
 )
 
-func main() {
-	day1()
+func Day1() {
+	leftList, rightList := ReadList("./day1.txt")
+
+	sort.Ints(leftList)
+	sort.Ints(rightList)
+
+	var result int
+	for i := 0; i < len(rightList); i++ {
+		abs := absDistance(rightList[i], leftList[i])
+		result = result + abs
+	}
+
+	fmt.Println(result)
 }
 
-func day1() {
-	file, err := os.Open("./day1.txt")
+func ReadList(pathFile string) ([]int, []int) {
+	file, err := os.Open(pathFile)
 	if err != nil {
 		panic("failed to read")
 	}
@@ -35,23 +46,13 @@ func day1() {
 		rightAux, _ := strconv.Atoi(all[2])
 		leftList = append(leftList, leftAux)
 		rightList = append(rightList, rightAux)
-
 	}
 
 	if err := scanner.Err(); err != nil {
 		fmt.Errorf("%v", err)
 	}
 
-	sort.Ints(leftList)
-	sort.Ints(rightList)
-
-	var result int
-	for i := 0; i < len(rightList); i++ {
-		abs := absDistance(rightList[i], leftList[i])
-		result = result + abs
-	}
-
-	fmt.Println(result)
+	return leftList, rightList
 }
 
 func absDistance(a, b int) int {
