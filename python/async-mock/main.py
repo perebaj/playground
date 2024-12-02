@@ -5,6 +5,7 @@ class FraudPolicy:
         else:
             return "No fraud"
 
+
 class FraudApi:
     async def read_current_month_tpv_values(self):
         # Simulate reading data
@@ -17,6 +18,7 @@ class FraudApi:
     async def write_verdict_api_database(self, verdict):
         # Simulate writing a fraud verdict to an API
         print(f"Writing verdict to database: {verdict}")
+
 
 class Processor:
     def __init__(self):

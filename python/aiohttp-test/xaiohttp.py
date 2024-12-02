@@ -1,8 +1,9 @@
 import aiohttp
 import asyncio
 
+
 async def fetch():
-    async with aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(0.02)) as session:
+    async with aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(0.2)) as session:
         try:
             async with session.get('https://jsonplaceholder.typicode.com/todos/1') as response:
 
@@ -18,4 +19,6 @@ async def fetch():
             print("TimeoutError:", str(e))
             print("ConnectionTimeoutError:", str(e))
             return None, None, None
+
+
 asyncio.run(fetch())

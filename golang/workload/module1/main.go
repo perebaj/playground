@@ -2,8 +2,10 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"log/slog"
 	"net/http"
+	"os"
 	"strings"
 
 	"github.com/clerk/clerk-sdk-go/v2"
@@ -18,7 +20,10 @@ func main() {
 	mux.Handle("/protected", ProtectRouteMiddleware(http.HandlerFunc(ProtectedHandler)))
 
 	clerk.SetKey("")
+	handler := slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{})
+	l := slog.New(handler)
 
+	slog.NewLogLogger()
 	slog.Info("Starting server on port 8080")
 	err := http.ListenAndServe(":8080", mux)
 	if err != nil {

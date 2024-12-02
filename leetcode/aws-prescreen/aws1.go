@@ -11,7 +11,7 @@ import (
 
 A user is using the Amazon fitness tracker, and they are engaged in a jumping exercise routine.
 The user is positioned on the ground, and there are n stones, each placed at different heights.
- The height of the i-th stone is represented by height[i] meters.
+The height of the i-th stone is represented by height[i] meters.
 
 The goal is to maximize the calorie burn during this exercise,
 and the calories burned when jumping from the j-th stone to the i-th stone is
@@ -41,14 +41,14 @@ func main() {
 	height := []int{3, 4, 2, 55, 6, 5}
 	height = append(height, 0)
 
-	sort.Ints(height) // 0,2,5,5
+	sort.Ints(height) // 0,2,3,4,5,6,55
 
-	index1 := 0
-	index2 := len(height) - 1
+	index1 := 0 //start
+	index2 := len(height) - 1 //end
 
 	var calories float64
 	for i := 0; i < len(height)-1; i++ {
-		if i%2 == 0 {
+		if i%2 == 0 { //par
 			fmt.Println(index1, index2)
 			fmt.Println(height[index1], height[index2])
 			calories = calories + math.Pow(float64(height[index1])-float64(height[index2]), 2)

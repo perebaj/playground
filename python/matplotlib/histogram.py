@@ -20,13 +20,13 @@ process_text_len_list = []
 for key in data:
     process_text_len_list.append(len(key["process"]))
 
-#The "Freedman-Diaconis" rule is a method for determining the optimal number of bins for a histogram
+# The "Freedman-Diaconis" rule is a method for determining the optimal number of bins for a histogram
 
-#calculate the IQR
+# calculate the IQR
 iqr = np.subtract(*np.percentile(process_text_len_list, [75, 25]))
 
 # calculate the bin width
-bin_width = 2 * iqr * len(process_text_len_list) ** (-1/3)
+bin_width = 2 * iqr * len(process_text_len_list) ** (-1 / 3)
 
 # calculate the number of bins
 bins = int((np.max(process_text_len_list) - np.min(process_text_len_list)) / bin_width)

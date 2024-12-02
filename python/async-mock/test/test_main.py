@@ -5,6 +5,7 @@ from main import Processor
 # def test_hello_world():
 #     assert "hello world" == "hello world"
 
+
 @pytest.mark.asyncio
 async def test_processor_process_tpv():
     # Create a Processor instance
@@ -23,4 +24,4 @@ async def test_processor_process_tpv():
     processor.fraud_policy.check_fraud_policy.assert_called_once_with(10000)
     processor.fraud_api.write_verdict_api_database.assert_called_once_with("No fraud")
     assert processor.fraud_api.write_verdict_api_database.call_count == 1
-    assert "jojo"   == "jojo"
+    assert "jojo" == "jojo"
