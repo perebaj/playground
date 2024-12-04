@@ -8,8 +8,7 @@ func main() {
 	// adventofcode24.Day1Challenge2()
 	// adventofcode24.Day2()
 
-	adventofcode24.Day2()
+	// adventofcode24.Day2()
 
-	// tmp2 := slices.Delete(tmp, 2, 3)
-
+	adventofcode24.Day3Part1()
 }
