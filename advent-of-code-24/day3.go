@@ -32,3 +32,7 @@ func Day3Part1() {
 
 	fmt.Println(result)
 }
+
+func Day3Part2() {
+	
+}

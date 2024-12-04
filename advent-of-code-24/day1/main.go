@@ -1,4 +1,4 @@
-package adventofcode24
+package main
 
 import (
 	"bufio"
@@ -10,8 +10,13 @@ import (
 	"strconv"
 )
 
-func Day1() {
-	leftList, rightList := ReadList("./day1.txt")
+func main() {
+	Day1Part1()
+	Day1Part2()
+}
+
+func Day1Part1() {
+	leftList, rightList := readInput("./day1.txt")
 
 	sort.Ints(leftList)
 	sort.Ints(rightList)
@@ -22,10 +27,30 @@ func Day1() {
 		result = result + abs
 	}
 
-	fmt.Println(result)
+	fmt.Println("Result Day 1 Part 2: ", result)
 }
 
-func ReadList(pathFile string) ([]int, []int) {
+func Day1Part2() {
+	leftList, rightList := readInput("./day1.txt")
+
+	rightMap := make(map[int]int)
+
+	for _, v := range rightList {
+		rightMap[v]++
+	}
+
+	var result int
+	for _, v := range leftList {
+		rightMapVal, ok := rightMap[v]
+		if ok {
+			result = result + (v * rightMapVal)
+		}
+	}
+
+	fmt.Println("Result Day 1 Part 1: ", result)
+}
+
+func readInput(pathFile string) ([]int, []int) {
 	file, err := os.Open(pathFile)
 	if err != nil {
 		panic("failed to read")
@@ -49,36 +74,16 @@ func ReadList(pathFile string) ([]int, []int) {
 	}
 
 	if err := scanner.Err(); err != nil {
-		fmt.Errorf("%v", err)
+		panic(err)
 	}
 
 	return leftList, rightList
 }
 
+// Calculate the absolute difference between 2 integers
 func absDistance(a, b int) int {
 	if a-b < 0 {
 		return b - a
 	}
 	return a - b
-}
-
-func Day1Challenge2() {
-	leftList, rightList := ReadList("./day2.txt")
-
-	rightMap := make(map[int]int)
-
-	for _, v := range rightList {
-		rightMap[v]++
-	}
-
-	var result int
-	for _, v := range leftList {
-		rightMapVal, ok := rightMap[v]
-		if ok {
-			fmt.Printf("left value %d exists in the right map x: %d times\n", v, rightMapVal)
-			result = result + (v * rightMapVal)
-		}
-	}
-
-	fmt.Println(result)
 }
