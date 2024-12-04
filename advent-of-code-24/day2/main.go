@@ -1,4 +1,4 @@
-package adventofcode24
+package main
 
 import (
 	"bufio"
@@ -9,35 +9,48 @@ import (
 	"strings"
 )
 
-func Day2() {
-	elements := Read("./day2tmp.txt")
+func main() {
+	Day2Part1()
+	Day2Part2()
+}
+
+func Day2Part1() {
+	elements := readInput("./day2.txt")
 	// fmt.Println(elements)
 
 	var results int
 	for _, v := range elements {
-		fmt.Printf("evaluating the array %v\n", v)
+		if isMonotonic(v) {
+			results++
+		}
+	}
+	fmt.Println("Day 2 Part 1 result: ", results)
+}
+
+func Day2Part2() {
+	elements := readInput("./day2.txt")
+
+	var results int
+	for _, v := range elements {
 		if !isMonotonic(v) {
 			for i := 0; i < len(v); i++ {
 				tmp := make([]string, len(v))
 				copy(tmp, v)
 				aux := slices.Delete(tmp, i, i+1)
-				fmt.Printf("evaluating the array %v\n", aux)
 				if isMonotonic(aux) {
-					fmt.Println("is monotonic")
 					results++
 					break
 				}
 			}
 		} else {
-			fmt.Println("is monotonic")
 			results++
 		}
 	}
 
-	fmt.Println(results)
+	fmt.Println("Day 2 Part 2 result: ", results)
 }
 
-func Read(path string) [][]string {
+func readInput(path string) [][]string {
 	file, err := os.Open(path)
 	if err != nil {
 		panic("failed to read")
@@ -61,6 +74,9 @@ func Read(path string) [][]string {
 	return elements
 }
 
+// isMonotonic validates if some rules given an slice of string
+// The elements are either all increasing or all decreasing.
+// Any two adjacent elements differ by at least one and at most three.
 func isMonotonic(elements []string) bool {
 	decreasing := false
 	increasing := false
@@ -96,6 +112,7 @@ func isMonotonic(elements []string) bool {
 	return true
 }
 
+// absDif calculates the absDif between to integers
 func absDif(a, b int) int {
 	if a-b > 0 {
 		return a - b
