@@ -9,9 +9,7 @@ from clearsale import Address, ClearSale, DocumentType, Transaction
 @patch("aiohttp.ClientSession.post")
 async def test_authenticate_success(mock_post):
     mock_post.return_value.__aenter__.return_value.status = 200
-    mock_post.return_value.__aenter__.return_value.json = AsyncMock(
-        return_value={"token": "test_token"}
-    )
+    mock_post.return_value.__aenter__.return_value.json = AsyncMock(return_value={"token": "test_token"})
     mock_post.return_value.__aenter__.return_value.headers = {
         "accept": "application/json",
         "content-type": "application/*+json",
@@ -38,9 +36,7 @@ async def test_authenticate_failure():
 async def test_create_transaction_success(mock_post):
     # Setup mock responses
     mock_post.return_value.__aenter__.return_value.status = 201
-    mock_post.return_value.__aenter__.return_value.json = AsyncMock(
-        return_value={"id": "test_transaction_id"}
-    )
+    mock_post.return_value.__aenter__.return_value.json = AsyncMock(return_value={"id": "test_transaction_id"})
 
     # Create test transaction
     transaction = Transaction(
@@ -74,9 +70,7 @@ async def test_create_transaction_success(mock_post):
 async def test_create_transaction_failure(mock_post):
     # Setup mock response for failure
     mock_post.return_value.__aenter__.return_value.status = 400
-    mock_post.return_value.__aenter__.return_value.text = AsyncMock(
-        return_value="Invalid data"
-    )
+    mock_post.return_value.__aenter__.return_value.text = AsyncMock(return_value="Invalid data")
 
     transaction = Transaction(documentType=DocumentType.CPF, document="12345678900")
     client = ClearSale(username="test_user", password="test_pass")
@@ -97,9 +91,7 @@ async def test_create_transaction_unauthorized_retry(mock_authenticate, mock_pos
         # First response: 401 Unauthorized
         AsyncMock(status=401),
         # Second response after re-auth: 201 Created
-        AsyncMock(
-            status=201, json=AsyncMock(return_value={"id": "new_transaction_id"})
-        ),
+        AsyncMock(status=201, json=AsyncMock(return_value={"id": "new_transaction_id"})),
     ]
     mock_post.return_value.__aenter__.side_effect = responses
 
@@ -125,9 +117,7 @@ async def test_create_transaction_unauthorized_retry(mock_authenticate, mock_pos
 async def test_create_transaction_no_token(mock_authenticate, mock_post):
     # Setup responses
     mock_post.return_value.__aenter__.return_value.status = 201
-    mock_post.return_value.__aenter__.return_value.json = AsyncMock(
-        return_value={"id": "test_transaction_id"}
-    )
+    mock_post.return_value.__aenter__.return_value.json = AsyncMock(return_value={"id": "test_transaction_id"})
 
     # Mock authenticate
     mock_authenticate.return_value = "new_auth_token"
@@ -148,9 +138,7 @@ async def test_create_transaction_no_token(mock_authenticate, mock_post):
 async def test_ratings_success(mock_post):
     # Setup mock response
     mock_post.return_value.__aenter__.return_value.status = 201
-    mock_post.return_value.__aenter__.return_value.json = AsyncMock(
-        return_value=[{"ratingId": "123", "score": 85}]
-    )
+    mock_post.return_value.__aenter__.return_value.json = AsyncMock(return_value=[{"ratingId": "123", "score": 85}])
 
     client = ClearSale(username="test_user", password="test_pass")
     client.token = "existing_token"  # Simulate already authenticated
@@ -169,9 +157,7 @@ async def test_ratings_success(mock_post):
 async def test_ratings_failure(mock_post):
     # Setup mock response for failure
     mock_post.return_value.__aenter__.return_value.status = 404
-    mock_post.return_value.__aenter__.return_value.text = AsyncMock(
-        return_value="Transaction not found"
-    )
+    mock_post.return_value.__aenter__.return_value.text = AsyncMock(return_value="Transaction not found")
 
     client = ClearSale(username="test_user", password="test_pass")
     client.token = "existing_token"
@@ -191,9 +177,7 @@ async def test_ratings_unauthorized_retry(mock_authenticate, mock_post):
         # First response: 401 Unauthorized
         AsyncMock(status=401),
         # Second response after re-auth: 201 OK
-        AsyncMock(
-            status=201, json=AsyncMock(return_value=[{"ratingId": "456", "score": 90}])
-        ),
+        AsyncMock(status=201, json=AsyncMock(return_value=[{"ratingId": "456", "score": 90}])),
     ]
     mock_post.return_value.__aenter__.side_effect = responses
 
@@ -218,9 +202,7 @@ async def test_ratings_unauthorized_retry(mock_authenticate, mock_post):
 async def test_ratings_no_token(mock_authenticate, mock_post):
     # Setup response
     mock_post.return_value.__aenter__.return_value.status = 201
-    mock_post.return_value.__aenter__.return_value.json = AsyncMock(
-        return_value=[{"ratingId": "789", "score": 75}]
-    )
+    mock_post.return_value.__aenter__.return_value.json = AsyncMock(return_value=[{"ratingId": "789", "score": 75}])
 
     # Mock authenticate
     mock_authenticate.return_value = "new_auth_token"
@@ -241,9 +223,7 @@ async def test_insights_success(mock_post):
     # Setup mock response
     mock_post.return_value.__aenter__.return_value.status = 201
     mock_post.return_value.__aenter__.return_value.json = AsyncMock(
-        return_value=[
-            {"insightId": "123", "type": "ADDRESS_VERIFICATION", "result": "APPROVED"}
-        ]
+        return_value=[{"insightId": "123", "type": "ADDRESS_VERIFICATION", "result": "APPROVED"}]
     )
 
     client = ClearSale(username="test_user", password="test_pass")
@@ -255,9 +235,7 @@ async def test_insights_success(mock_post):
     mock_post.assert_called_once()
     call_args = mock_post.call_args
     assert call_args[1]["headers"]["Authorization"] == "Bearer existing_token"
-    assert insights == [
-        {"insightId": "123", "type": "ADDRESS_VERIFICATION", "result": "APPROVED"}
-    ]
+    assert insights == [{"insightId": "123", "type": "ADDRESS_VERIFICATION", "result": "APPROVED"}]
 
 
 @pytest.mark.asyncio
@@ -265,9 +243,7 @@ async def test_insights_success(mock_post):
 async def test_insights_failure(mock_post):
     # Setup mock response for failure
     mock_post.return_value.__aenter__.return_value.status = 404
-    mock_post.return_value.__aenter__.return_value.text = AsyncMock(
-        return_value="Transaction not found"
-    )
+    mock_post.return_value.__aenter__.return_value.text = AsyncMock(return_value="Transaction not found")
 
     client = ClearSale(username="test_user", password="test_pass")
     client.token = "existing_token"
@@ -314,9 +290,7 @@ async def test_insights_unauthorized_retry(mock_authenticate, mock_post):
     mock_authenticate.assert_called_once()
     # Verify get was called twice
     assert mock_post.call_count == 2
-    assert insights == [
-        {"insightId": "456", "type": "DOCUMENT_VERIFICATION", "result": "APPROVED"}
-    ]
+    assert insights == [{"insightId": "456", "type": "DOCUMENT_VERIFICATION", "result": "APPROVED"}]
 
 
 @pytest.mark.asyncio
@@ -326,9 +300,7 @@ async def test_insights_no_token(mock_authenticate, mock_post):
     # Setup response
     mock_post.return_value.__aenter__.return_value.status = 201
     mock_post.return_value.__aenter__.return_value.json = AsyncMock(
-        return_value=[
-            {"insightId": "789", "type": "PHONE_VERIFICATION", "result": "REJECTED"}
-        ]
+        return_value=[{"insightId": "789", "type": "PHONE_VERIFICATION", "result": "REJECTED"}]
     )
 
     # Mock authenticate
@@ -341,9 +313,7 @@ async def test_insights_no_token(mock_authenticate, mock_post):
 
     # Verify authenticate was called
     mock_authenticate.assert_called_once()
-    assert insights == [
-        {"insightId": "789", "type": "PHONE_VERIFICATION", "result": "REJECTED"}
-    ]
+    assert insights == [{"insightId": "789", "type": "PHONE_VERIFICATION", "result": "REJECTED"}]
 
 
 @pytest.mark.asyncio
@@ -370,9 +340,7 @@ async def test_scores_success(mock_post):
     mock_post.assert_called_once()
     call_args = mock_post.call_args
     assert call_args[1]["headers"]["Authorization"] == "Bearer existing_token"
-    assert scores == [
-        {"reason": "Initial", "value": 56.21, "createdAt": "2025-03-26T13:46:32.604Z"}
-    ]
+    assert scores == [{"reason": "Initial", "value": 56.21, "createdAt": "2025-03-26T13:46:32.604Z"}]
 
 
 @pytest.mark.asyncio
@@ -380,9 +348,7 @@ async def test_scores_success(mock_post):
 async def test_scores_failure(mock_post):
     # Setup mock response for failure
     mock_post.return_value.__aenter__.return_value.status = 404
-    mock_post.return_value.__aenter__.return_value.text = AsyncMock(
-        return_value="Transaction not found"
-    )
+    mock_post.return_value.__aenter__.return_value.text = AsyncMock(return_value="Transaction not found")
 
     client = ClearSale(username="test_user", password="test_pass")
     client.token = "existing_token"
@@ -429,9 +395,7 @@ async def test_scores_unauthorized_retry(mock_authenticate, mock_post):
     mock_authenticate.assert_called_once()
     # Verify get was called twice
     assert mock_post.call_count == 2
-    assert scores == [
-        {"reason": "Final", "value": 78.45, "createdAt": "2025-03-26T13:46:32.604Z"}
-    ]
+    assert scores == [{"reason": "Final", "value": 78.45, "createdAt": "2025-03-26T13:46:32.604Z"}]
 
 
 @pytest.mark.asyncio
@@ -441,9 +405,7 @@ async def test_scores_no_token(mock_authenticate, mock_post):
     # Setup response
     mock_post.return_value.__aenter__.return_value.status = 201
     mock_post.return_value.__aenter__.return_value.json = AsyncMock(
-        return_value=[
-            {"reason": "Final", "value": 78.45, "createdAt": "2025-03-26T13:46:32.604Z"}
-        ]
+        return_value=[{"reason": "Final", "value": 78.45, "createdAt": "2025-03-26T13:46:32.604Z"}]
     )
 
     # Mock authenticate
@@ -456,6 +418,4 @@ async def test_scores_no_token(mock_authenticate, mock_post):
 
     # Verify authenticate was called
     mock_authenticate.assert_called_once()
-    assert scores == [
-        {"reason": "Final", "value": 78.45, "createdAt": "2025-03-26T13:46:32.604Z"}
-    ]
+    assert scores == [{"reason": "Final", "value": 78.45, "createdAt": "2025-03-26T13:46:32.604Z"}]

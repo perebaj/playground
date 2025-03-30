@@ -47,9 +47,7 @@ class Transaction(BaseModel):
     email: Optional[str] = None
     # secondary_document can't have the same value as the document field, and secondary_document_type is required if secondary_document is informed
     # If document_type is CPF, secondary_document_type must be CNPJ and vice versa
-    secondary_document_type: Optional[DocumentType] = Field(
-        None, alias="secondaryDocumentType"
-    )
+    secondary_document_type: Optional[DocumentType] = Field(None, alias="secondaryDocumentType")
     secondary_document: Optional[str] = Field(None, alias="secondaryDocument")
 
 
@@ -61,9 +59,7 @@ class ClearSale:
     # TODO: Read this base url from the settings not a hardcoded value
     BASE_URL = "https://datatrustapihml.clearsale.com.br/"
 
-    def __init__(
-        self, username: str = None, password: str = None, base_url: str = None
-    ):
+    def __init__(self, username: str = None, password: str = None, base_url: str = None):
         self.username = username
         self.password = password
         # if base_url is not provided, use the default one(staging environment)
@@ -142,9 +138,7 @@ class ClearSale:
             await self.authenticate()
 
         async with aiohttp.ClientSession() as session:
-            async with session.post(
-                url, headers={"Authorization": f"Bearer {self.token}"}
-            ) as response:
+            async with session.post(url, headers={"Authorization": f"Bearer {self.token}"}) as response:
                 if response.status == 401:  # Unauthorized - token expired
                     await self.authenticate()
                     # Retry with new token
