@@ -1,0 +1,1390 @@
+{
+    "transaction_id": "",
+    "linked_transaction_id": "etste",
+    "created_at": "2024-12-18T12:33:39.13Z",
+    "request_document_data": {
+        "linked_transaction_id": "etste",
+        "transaction_id": "",
+        "domain_name": "fraud",
+        "reporter": "picadinho",
+        "environment": "prd",
+        "experiments": [],
+        "document_data": {
+            "amount_cents": 340860,
+            "cart": {
+                "address": "teste",
+                "discount_cents": 0,
+                "shipping_cents": 0,
+                "zip_code": "teste"
+            },
+            "contact": null,
+            "created_at": "2024-12-18T12:33:39Z",
+            "email": "teste",
+            "expires_at": "2024-12-20T00:33:39Z",
+            "external_id": "teste",
+            "id": "teste",
+            "is_first_purchase": true,
+            "linked_transaction_id": "teste",
+            "max_due_day": "0",
+            "merchant_company_id": "teste",
+            "merchant_document_number": "teste",
+            "origin": "sdk",
+            "payment_options": {
+                "14": [
+                    {
+                        "available": false,
+                        "created_at": "2024-12-18T12:33:39Z",
+                        "id": "fe0395df-dfb0-4baf-b5bc-490e536f7137",
+                        "installment_quantity": 1,
+                        "installments": [
+                            {
+                                "calendar_day": 14,
+                                "expected_settlement_date": "2024-12-30",
+                                "interest_amount_cents": 0,
+                                "order": 1,
+                                "subtotal_amount_cents": 340860,
+                                "total_amount_cents": 350404
+                            }
+                        ],
+                        "installments_interval": [
+                            14
+                        ],
+                        "interest_amount_cents": 0,
+                        "interest_rate_bps": 0,
+                        "merchant_service_fee_amount_cents": 9544,
+                        "merchant_service_fee_rate_bps": 280,
+                        "subtotal_amount_cents": 340860,
+                        "supplier_fee_amount_cents": 0,
+                        "supplier_fee_rate_bps": 0,
+                        "total_amount_cents": 350404
+                    },
+                    {
+                        "available": false,
+                        "created_at": "2024-12-18T12:33:39Z",
+                        "id": "b0798ba0-dc6b-491e-9d94-83def1529f7d",
+                        "installment_quantity": 2,
+                        "installments": [
+                            {
+                                "calendar_day": 14,
+                                "expected_settlement_date": "2024-12-30",
+                                "interest_amount_cents": 0,
+                                "order": 1,
+                                "subtotal_amount_cents": 170430,
+                                "total_amount_cents": 175202
+                            },
+                            {
+                                "calendar_day": 28,
+                                "expected_settlement_date": "2025-01-13",
+                                "interest_amount_cents": 0,
+                                "order": 2,
+                                "subtotal_amount_cents": 170430,
+                                "total_amount_cents": 175202
+                            }
+                        ],
+                        "installments_interval": [
+                            14,
+                            28
+                        ],
+                        "interest_amount_cents": 0,
+                        "interest_rate_bps": 0,
+                        "merchant_service_fee_amount_cents": 9544,
+                        "merchant_service_fee_rate_bps": 280,
+                        "subtotal_amount_cents": 340860,
+                        "supplier_fee_amount_cents": 0,
+                        "supplier_fee_rate_bps": 0,
+                        "total_amount_cents": 350404
+                    },
+                    {
+                        "available": false,
+                        "created_at": "2024-12-18T12:33:39Z",
+                        "id": "fedc765a-8fad-4a1b-b744-c0598ae90df9",
+                        "installment_quantity": 3,
+                        "installments": [
+                            {
+                                "calendar_day": 14,
+                                "expected_settlement_date": "2024-12-30",
+                                "interest_amount_cents": 0,
+                                "order": 1,
+                                "subtotal_amount_cents": 113620,
+                                "total_amount_cents": 118279
+                            },
+                            {
+                                "calendar_day": 28,
+                                "expected_settlement_date": "2025-01-13",
+                                "interest_amount_cents": 0,
+                                "order": 2,
+                                "subtotal_amount_cents": 113620,
+                                "total_amount_cents": 118278
+                            },
+                            {
+                                "calendar_day": 42,
+                                "expected_settlement_date": "2025-01-27",
+                                "interest_amount_cents": 0,
+                                "order": 3,
+                                "subtotal_amount_cents": 113620,
+                                "total_amount_cents": 118278
+                            }
+                        ],
+                        "installments_interval": [
+                            14,
+                            28,
+                            42
+                        ],
+                        "interest_amount_cents": 0,
+                        "interest_rate_bps": 0,
+                        "merchant_service_fee_amount_cents": 13975,
+                        "merchant_service_fee_rate_bps": 410,
+                        "subtotal_amount_cents": 340860,
+                        "supplier_fee_amount_cents": 0,
+                        "supplier_fee_rate_bps": 0,
+                        "total_amount_cents": 354835
+                    },
+                    {
+                        "available": false,
+                        "created_at": "2024-12-18T12:33:39Z",
+                        "id": "f4855f8f-ff9c-40f7-818a-cf1ceb6a4a8a",
+                        "installment_quantity": 4,
+                        "installments": [
+                            {
+                                "calendar_day": 14,
+                                "expected_settlement_date": "2024-12-30",
+                                "interest_amount_cents": 0,
+                                "order": 1,
+                                "subtotal_amount_cents": 85215,
+                                "total_amount_cents": 88711
+                            },
+                            {
+                                "calendar_day": 28,
+                                "expected_settlement_date": "2025-01-13",
+                                "interest_amount_cents": 0,
+                                "order": 2,
+                                "subtotal_amount_cents": 85215,
+                                "total_amount_cents": 88708
+                            },
+                            {
+                                "calendar_day": 42,
+                                "expected_settlement_date": "2025-01-27",
+                                "interest_amount_cents": 0,
+                                "order": 3,
+                                "subtotal_amount_cents": 85215,
+                                "total_amount_cents": 88708
+                            },
+                            {
+                                "calendar_day": 56,
+                                "expected_settlement_date": "2025-02-10",
+                                "interest_amount_cents": 0,
+                                "order": 4,
+                                "subtotal_amount_cents": 85215,
+                                "total_amount_cents": 88708
+                            }
+                        ],
+                        "installments_interval": [
+                            14,
+                            28,
+                            42,
+                            56
+                        ],
+                        "interest_amount_cents": 0,
+                        "interest_rate_bps": 0,
+                        "merchant_service_fee_amount_cents": 13975,
+                        "merchant_service_fee_rate_bps": 410,
+                        "subtotal_amount_cents": 340860,
+                        "supplier_fee_amount_cents": 0,
+                        "supplier_fee_rate_bps": 0,
+                        "total_amount_cents": 354835
+                    },
+                    {
+                        "available": false,
+                        "created_at": "2024-12-18T12:33:39Z",
+                        "id": "845fa9d6-d0ea-495a-b3e8-23ed638fc067",
+                        "installment_quantity": 5,
+                        "installments": [
+                            {
+                                "calendar_day": 14,
+                                "expected_settlement_date": "2024-12-30",
+                                "interest_amount_cents": 0,
+                                "order": 1,
+                                "subtotal_amount_cents": 68172,
+                                "total_amount_cents": 71923
+                            },
+                            {
+                                "calendar_day": 28,
+                                "expected_settlement_date": "2025-01-13",
+                                "interest_amount_cents": 0,
+                                "order": 2,
+                                "subtotal_amount_cents": 68172,
+                                "total_amount_cents": 71921
+                            },
+                            {
+                                "calendar_day": 42,
+                                "expected_settlement_date": "2025-01-27",
+                                "interest_amount_cents": 0,
+                                "order": 3,
+                                "subtotal_amount_cents": 68172,
+                                "total_amount_cents": 71921
+                            },
+                            {
+                                "calendar_day": 56,
+                                "expected_settlement_date": "2025-02-10",
+                                "interest_amount_cents": 0,
+                                "order": 4,
+                                "subtotal_amount_cents": 68172,
+                                "total_amount_cents": 71921
+                            },
+                            {
+                                "calendar_day": 70,
+                                "expected_settlement_date": "2025-02-24",
+                                "interest_amount_cents": 0,
+                                "order": 5,
+                                "subtotal_amount_cents": 68172,
+                                "total_amount_cents": 71921
+                            }
+                        ],
+                        "installments_interval": [
+                            14,
+                            28,
+                            42,
+                            56,
+                            70
+                        ],
+                        "interest_amount_cents": 0,
+                        "interest_rate_bps": 0,
+                        "merchant_service_fee_amount_cents": 18747,
+                        "merchant_service_fee_rate_bps": 550,
+                        "subtotal_amount_cents": 340860,
+                        "supplier_fee_amount_cents": 0,
+                        "supplier_fee_rate_bps": 0,
+                        "total_amount_cents": 359607
+                    },
+                    {
+                        "available": false,
+                        "created_at": "2024-12-18T12:33:39Z",
+                        "id": "976e1bf1-c56c-4ada-a46e-7b006d8de45a",
+                        "installment_quantity": 6,
+                        "installments": [
+                            {
+                                "calendar_day": 14,
+                                "expected_settlement_date": "2024-12-30",
+                                "interest_amount_cents": 0,
+                                "order": 1,
+                                "subtotal_amount_cents": 56810,
+                                "total_amount_cents": 59937
+                            },
+                            {
+                                "calendar_day": 28,
+                                "expected_settlement_date": "2025-01-13",
+                                "interest_amount_cents": 0,
+                                "order": 2,
+                                "subtotal_amount_cents": 56810,
+                                "total_amount_cents": 59934
+                            },
+                            {
+                                "calendar_day": 42,
+                                "expected_settlement_date": "2025-01-27",
+                                "interest_amount_cents": 0,
+                                "order": 3,
+                                "subtotal_amount_cents": 56810,
+                                "total_amount_cents": 59934
+                            },
+                            {
+                                "calendar_day": 56,
+                                "expected_settlement_date": "2025-02-10",
+                                "interest_amount_cents": 0,
+                                "order": 4,
+                                "subtotal_amount_cents": 56810,
+                                "total_amount_cents": 59934
+                            },
+                            {
+                                "calendar_day": 70,
+                                "expected_settlement_date": "2025-02-24",
+                                "interest_amount_cents": 0,
+                                "order": 5,
+                                "subtotal_amount_cents": 56810,
+                                "total_amount_cents": 59934
+                            },
+                            {
+                                "calendar_day": 84,
+                                "expected_settlement_date": "2025-03-10",
+                                "interest_amount_cents": 0,
+                                "order": 6,
+                                "subtotal_amount_cents": 56810,
+                                "total_amount_cents": 59934
+                            }
+                        ],
+                        "installments_interval": [
+                            14,
+                            28,
+                            42,
+                            56,
+                            70,
+                            84
+                        ],
+                        "interest_amount_cents": 0,
+                        "interest_rate_bps": 0,
+                        "merchant_service_fee_amount_cents": 18747,
+                        "merchant_service_fee_rate_bps": 550,
+                        "subtotal_amount_cents": 340860,
+                        "supplier_fee_amount_cents": 0,
+                        "supplier_fee_rate_bps": 0,
+                        "total_amount_cents": 359607
+                    }
+                ],
+                "28": [
+                    {
+                        "available": false,
+                        "created_at": "2024-12-18T12:33:39Z",
+                        "id": "93b05813-120a-4041-b262-42ce531a39ee",
+                        "installment_quantity": 1,
+                        "installments": [
+                            {
+                                "calendar_day": 28,
+                                "expected_settlement_date": "2025-01-13",
+                                "interest_amount_cents": 0,
+                                "order": 1,
+                                "subtotal_amount_cents": 340860,
+                                "total_amount_cents": 350404
+                            }
+                        ],
+                        "installments_interval": [
+                            28
+                        ],
+                        "interest_amount_cents": 0,
+                        "interest_rate_bps": 0,
+                        "merchant_service_fee_amount_cents": 9544,
+                        "merchant_service_fee_rate_bps": 280,
+                        "subtotal_amount_cents": 340860,
+                        "supplier_fee_amount_cents": 0,
+                        "supplier_fee_rate_bps": 0,
+                        "total_amount_cents": 350404
+                    },
+                    {
+                        "available": false,
+                        "created_at": "2024-12-18T12:33:39Z",
+                        "id": "a8b5c8cc-02be-4099-8d24-9734f62c363a",
+                        "installment_quantity": 2,
+                        "installments": [
+                            {
+                                "calendar_day": 28,
+                                "expected_settlement_date": "2025-01-13",
+                                "interest_amount_cents": 0,
+                                "order": 1,
+                                "subtotal_amount_cents": 170430,
+                                "total_amount_cents": 177418
+                            },
+                            {
+                                "calendar_day": 56,
+                                "expected_settlement_date": "2025-02-10",
+                                "interest_amount_cents": 0,
+                                "order": 2,
+                                "subtotal_amount_cents": 170430,
+                                "total_amount_cents": 177417
+                            }
+                        ],
+                        "installments_interval": [
+                            28,
+                            56
+                        ],
+                        "interest_amount_cents": 0,
+                        "interest_rate_bps": 0,
+                        "merchant_service_fee_amount_cents": 13975,
+                        "merchant_service_fee_rate_bps": 410,
+                        "subtotal_amount_cents": 340860,
+                        "supplier_fee_amount_cents": 0,
+                        "supplier_fee_rate_bps": 0,
+                        "total_amount_cents": 354835
+                    },
+                    {
+                        "available": false,
+                        "created_at": "2024-12-18T12:33:39Z",
+                        "id": "901d2df7-0487-41d8-9a8f-4da9640b8f20",
+                        "installment_quantity": 3,
+                        "installments": [
+                            {
+                                "calendar_day": 28,
+                                "expected_settlement_date": "2025-01-13",
+                                "interest_amount_cents": 0,
+                                "order": 1,
+                                "subtotal_amount_cents": 113620,
+                                "total_amount_cents": 119869
+                            },
+                            {
+                                "calendar_day": 56,
+                                "expected_settlement_date": "2025-02-10",
+                                "interest_amount_cents": 0,
+                                "order": 2,
+                                "subtotal_amount_cents": 113620,
+                                "total_amount_cents": 119869
+                            },
+                            {
+                                "calendar_day": 84,
+                                "expected_settlement_date": "2025-03-10",
+                                "interest_amount_cents": 0,
+                                "order": 3,
+                                "subtotal_amount_cents": 113620,
+                                "total_amount_cents": 119869
+                            }
+                        ],
+                        "installments_interval": [
+                            28,
+                            56,
+                            84
+                        ],
+                        "interest_amount_cents": 0,
+                        "interest_rate_bps": 0,
+                        "merchant_service_fee_amount_cents": 18747,
+                        "merchant_service_fee_rate_bps": 550,
+                        "subtotal_amount_cents": 340860,
+                        "supplier_fee_amount_cents": 0,
+                        "supplier_fee_rate_bps": 0,
+                        "total_amount_cents": 359607
+                    }
+                ],
+                "7": [
+                    {
+                        "available": false,
+                        "created_at": "2024-12-18T12:33:39Z",
+                        "id": "09bea003-044c-40f8-8a3d-7c7503acd433",
+                        "installment_quantity": 1,
+                        "installments": [
+                            {
+                                "calendar_day": 7,
+                                "expected_settlement_date": "2024-12-23",
+                                "interest_amount_cents": 0,
+                                "order": 1,
+                                "subtotal_amount_cents": 340860,
+                                "total_amount_cents": 350404
+                            }
+                        ],
+                        "installments_interval": [
+                            7
+                        ],
+                        "interest_amount_cents": 0,
+                        "interest_rate_bps": 0,
+                        "merchant_service_fee_amount_cents": 9544,
+                        "merchant_service_fee_rate_bps": 280,
+                        "subtotal_amount_cents": 340860,
+                        "supplier_fee_amount_cents": 0,
+                        "supplier_fee_rate_bps": 0,
+                        "total_amount_cents": 350404
+                    },
+                    {
+                        "available": false,
+                        "created_at": "2024-12-18T12:33:39Z",
+                        "id": "8f2fffaf-d7fa-480c-8f9c-af32bb69031e",
+                        "installment_quantity": 2,
+                        "installments": [
+                            {
+                                "calendar_day": 7,
+                                "expected_settlement_date": "2024-12-23",
+                                "interest_amount_cents": 0,
+                                "order": 1,
+                                "subtotal_amount_cents": 170430,
+                                "total_amount_cents": 175202
+                            },
+                            {
+                                "calendar_day": 14,
+                                "expected_settlement_date": "2024-12-30",
+                                "interest_amount_cents": 0,
+                                "order": 2,
+                                "subtotal_amount_cents": 170430,
+                                "total_amount_cents": 175202
+                            }
+                        ],
+                        "installments_interval": [
+                            7,
+                            14
+                        ],
+                        "interest_amount_cents": 0,
+                        "interest_rate_bps": 0,
+                        "merchant_service_fee_amount_cents": 9544,
+                        "merchant_service_fee_rate_bps": 280,
+                        "subtotal_amount_cents": 340860,
+                        "supplier_fee_amount_cents": 0,
+                        "supplier_fee_rate_bps": 0,
+                        "total_amount_cents": 350404
+                    },
+                    {
+                        "available": false,
+                        "created_at": "2024-12-18T12:33:39Z",
+                        "id": "def8280b-b3c4-4671-8b5f-bb31530a9b96",
+                        "installment_quantity": 3,
+                        "installments": [
+                            {
+                                "calendar_day": 7,
+                                "expected_settlement_date": "2024-12-23",
+                                "interest_amount_cents": 0,
+                                "order": 1,
+                                "subtotal_amount_cents": 113620,
+                                "total_amount_cents": 116802
+                            },
+                            {
+                                "calendar_day": 14,
+                                "expected_settlement_date": "2024-12-30",
+                                "interest_amount_cents": 0,
+                                "order": 2,
+                                "subtotal_amount_cents": 113620,
+                                "total_amount_cents": 116801
+                            },
+                            {
+                                "calendar_day": 21,
+                                "expected_settlement_date": "2025-01-06",
+                                "interest_amount_cents": 0,
+                                "order": 3,
+                                "subtotal_amount_cents": 113620,
+                                "total_amount_cents": 116801
+                            }
+                        ],
+                        "installments_interval": [
+                            7,
+                            14,
+                            21
+                        ],
+                        "interest_amount_cents": 0,
+                        "interest_rate_bps": 0,
+                        "merchant_service_fee_amount_cents": 9544,
+                        "merchant_service_fee_rate_bps": 280,
+                        "subtotal_amount_cents": 340860,
+                        "supplier_fee_amount_cents": 0,
+                        "supplier_fee_rate_bps": 0,
+                        "total_amount_cents": 350404
+                    },
+                    {
+                        "available": false,
+                        "created_at": "2024-12-18T12:33:39Z",
+                        "id": "15f6d207-ad5f-4e43-ae49-a9592017fd4c",
+                        "installment_quantity": 4,
+                        "installments": [
+                            {
+                                "calendar_day": 7,
+                                "expected_settlement_date": "2024-12-23",
+                                "interest_amount_cents": 0,
+                                "order": 1,
+                                "subtotal_amount_cents": 85215,
+                                "total_amount_cents": 87601
+                            },
+                            {
+                                "calendar_day": 14,
+                                "expected_settlement_date": "2024-12-30",
+                                "interest_amount_cents": 0,
+                                "order": 2,
+                                "subtotal_amount_cents": 85215,
+                                "total_amount_cents": 87601
+                            },
+                            {
+                                "calendar_day": 21,
+                                "expected_settlement_date": "2025-01-06",
+                                "interest_amount_cents": 0,
+                                "order": 3,
+                                "subtotal_amount_cents": 85215,
+                                "total_amount_cents": 87601
+                            },
+                            {
+                                "calendar_day": 28,
+                                "expected_settlement_date": "2025-01-13",
+                                "interest_amount_cents": 0,
+                                "order": 4,
+                                "subtotal_amount_cents": 85215,
+                                "total_amount_cents": 87601
+                            }
+                        ],
+                        "installments_interval": [
+                            7,
+                            14,
+                            21,
+                            28
+                        ],
+                        "interest_amount_cents": 0,
+                        "interest_rate_bps": 0,
+                        "merchant_service_fee_amount_cents": 9544,
+                        "merchant_service_fee_rate_bps": 280,
+                        "subtotal_amount_cents": 340860,
+                        "supplier_fee_amount_cents": 0,
+                        "supplier_fee_rate_bps": 0,
+                        "total_amount_cents": 350404
+                    },
+                    {
+                        "available": false,
+                        "created_at": "2024-12-18T12:33:39Z",
+                        "id": "87dbcd02-34b8-46eb-b778-452ece424eda",
+                        "installment_quantity": 5,
+                        "installments": [
+                            {
+                                "calendar_day": 7,
+                                "expected_settlement_date": "2024-12-23",
+                                "interest_amount_cents": 0,
+                                "order": 1,
+                                "subtotal_amount_cents": 68172,
+                                "total_amount_cents": 70967
+                            },
+                            {
+                                "calendar_day": 14,
+                                "expected_settlement_date": "2024-12-30",
+                                "interest_amount_cents": 0,
+                                "order": 2,
+                                "subtotal_amount_cents": 68172,
+                                "total_amount_cents": 70967
+                            },
+                            {
+                                "calendar_day": 21,
+                                "expected_settlement_date": "2025-01-06",
+                                "interest_amount_cents": 0,
+                                "order": 3,
+                                "subtotal_amount_cents": 68172,
+                                "total_amount_cents": 70967
+                            },
+                            {
+                                "calendar_day": 28,
+                                "expected_settlement_date": "2025-01-13",
+                                "interest_amount_cents": 0,
+                                "order": 4,
+                                "subtotal_amount_cents": 68172,
+                                "total_amount_cents": 70967
+                            },
+                            {
+                                "calendar_day": 35,
+                                "expected_settlement_date": "2025-01-20",
+                                "interest_amount_cents": 0,
+                                "order": 5,
+                                "subtotal_amount_cents": 68172,
+                                "total_amount_cents": 70967
+                            }
+                        ],
+                        "installments_interval": [
+                            7,
+                            14,
+                            21,
+                            28,
+                            35
+                        ],
+                        "interest_amount_cents": 0,
+                        "interest_rate_bps": 0,
+                        "merchant_service_fee_amount_cents": 13975,
+                        "merchant_service_fee_rate_bps": 410,
+                        "subtotal_amount_cents": 340860,
+                        "supplier_fee_amount_cents": 0,
+                        "supplier_fee_rate_bps": 0,
+                        "total_amount_cents": 354835
+                    },
+                    {
+                        "available": false,
+                        "created_at": "2024-12-18T12:33:39Z",
+                        "id": "5d6cb28c-ce10-48af-8210-30bccef8c481",
+                        "installment_quantity": 6,
+                        "installments": [
+                            {
+                                "calendar_day": 7,
+                                "expected_settlement_date": "2024-12-23",
+                                "interest_amount_cents": 0,
+                                "order": 1,
+                                "subtotal_amount_cents": 56810,
+                                "total_amount_cents": 59140
+                            },
+                            {
+                                "calendar_day": 14,
+                                "expected_settlement_date": "2024-12-30",
+                                "interest_amount_cents": 0,
+                                "order": 2,
+                                "subtotal_amount_cents": 56810,
+                                "total_amount_cents": 59139
+                            },
+                            {
+                                "calendar_day": 21,
+                                "expected_settlement_date": "2025-01-06",
+                                "interest_amount_cents": 0,
+                                "order": 3,
+                                "subtotal_amount_cents": 56810,
+                                "total_amount_cents": 59139
+                            },
+                            {
+                                "calendar_day": 28,
+                                "expected_settlement_date": "2025-01-13",
+                                "interest_amount_cents": 0,
+                                "order": 4,
+                                "subtotal_amount_cents": 56810,
+                                "total_amount_cents": 59139
+                            },
+                            {
+                                "calendar_day": 35,
+                                "expected_settlement_date": "2025-01-20",
+                                "interest_amount_cents": 0,
+                                "order": 5,
+                                "subtotal_amount_cents": 56810,
+                                "total_amount_cents": 59139
+                            },
+                            {
+                                "calendar_day": 42,
+                                "expected_settlement_date": "2025-01-27",
+                                "interest_amount_cents": 0,
+                                "order": 6,
+                                "subtotal_amount_cents": 56810,
+                                "total_amount_cents": 59139
+                            }
+                        ],
+                        "installments_interval": [
+                            7,
+                            14,
+                            21,
+                            28,
+                            35,
+                            42
+                        ],
+                        "interest_amount_cents": 0,
+                        "interest_rate_bps": 0,
+                        "merchant_service_fee_amount_cents": 13975,
+                        "merchant_service_fee_rate_bps": 410,
+                        "subtotal_amount_cents": 340860,
+                        "supplier_fee_amount_cents": 0,
+                        "supplier_fee_rate_bps": 0,
+                        "total_amount_cents": 354835
+                    },
+                    {
+                        "available": false,
+                        "created_at": "2024-12-18T12:33:39Z",
+                        "id": "3c3977eb-daa1-4b82-9768-43c008f72083",
+                        "installment_quantity": 7,
+                        "installments": [
+                            {
+                                "calendar_day": 7,
+                                "expected_settlement_date": "2024-12-23",
+                                "interest_amount_cents": 0,
+                                "order": 1,
+                                "subtotal_amount_cents": 48696,
+                                "total_amount_cents": 50695
+                            },
+                            {
+                                "calendar_day": 14,
+                                "expected_settlement_date": "2024-12-30",
+                                "interest_amount_cents": 0,
+                                "order": 2,
+                                "subtotal_amount_cents": 48694,
+                                "total_amount_cents": 50690
+                            },
+                            {
+                                "calendar_day": 21,
+                                "expected_settlement_date": "2025-01-06",
+                                "interest_amount_cents": 0,
+                                "order": 3,
+                                "subtotal_amount_cents": 48694,
+                                "total_amount_cents": 50690
+                            },
+                            {
+                                "calendar_day": 28,
+                                "expected_settlement_date": "2025-01-13",
+                                "interest_amount_cents": 0,
+                                "order": 4,
+                                "subtotal_amount_cents": 48694,
+                                "total_amount_cents": 50690
+                            },
+                            {
+                                "calendar_day": 35,
+                                "expected_settlement_date": "2025-01-20",
+                                "interest_amount_cents": 0,
+                                "order": 5,
+                                "subtotal_amount_cents": 48694,
+                                "total_amount_cents": 50690
+                            },
+                            {
+                                "calendar_day": 42,
+                                "expected_settlement_date": "2025-01-27",
+                                "interest_amount_cents": 0,
+                                "order": 6,
+                                "subtotal_amount_cents": 48694,
+                                "total_amount_cents": 50690
+                            },
+                            {
+                                "calendar_day": 49,
+                                "expected_settlement_date": "2025-02-03",
+                                "interest_amount_cents": 0,
+                                "order": 7,
+                                "subtotal_amount_cents": 48694,
+                                "total_amount_cents": 50690
+                            }
+                        ],
+                        "installments_interval": [
+                            7,
+                            14,
+                            21,
+                            28,
+                            35,
+                            42,
+                            49
+                        ],
+                        "interest_amount_cents": 0,
+                        "interest_rate_bps": 0,
+                        "merchant_service_fee_amount_cents": 13975,
+                        "merchant_service_fee_rate_bps": 410,
+                        "subtotal_amount_cents": 340860,
+                        "supplier_fee_amount_cents": 0,
+                        "supplier_fee_rate_bps": 0,
+                        "total_amount_cents": 354835
+                    },
+                    {
+                        "available": false,
+                        "created_at": "2024-12-18T12:33:39Z",
+                        "id": "9bcd46d3-df61-495c-b6a4-128a20c290fa",
+                        "installment_quantity": 8,
+                        "installments": [
+                            {
+                                "calendar_day": 7,
+                                "expected_settlement_date": "2024-12-23",
+                                "interest_amount_cents": 0,
+                                "order": 1,
+                                "subtotal_amount_cents": 42611,
+                                "total_amount_cents": 44357
+                            },
+                            {
+                                "calendar_day": 14,
+                                "expected_settlement_date": "2024-12-30",
+                                "interest_amount_cents": 0,
+                                "order": 2,
+                                "subtotal_amount_cents": 42607,
+                                "total_amount_cents": 44354
+                            },
+                            {
+                                "calendar_day": 21,
+                                "expected_settlement_date": "2025-01-06",
+                                "interest_amount_cents": 0,
+                                "order": 3,
+                                "subtotal_amount_cents": 42607,
+                                "total_amount_cents": 44354
+                            },
+                            {
+                                "calendar_day": 28,
+                                "expected_settlement_date": "2025-01-13",
+                                "interest_amount_cents": 0,
+                                "order": 4,
+                                "subtotal_amount_cents": 42607,
+                                "total_amount_cents": 44354
+                            },
+                            {
+                                "calendar_day": 35,
+                                "expected_settlement_date": "2025-01-20",
+                                "interest_amount_cents": 0,
+                                "order": 5,
+                                "subtotal_amount_cents": 42607,
+                                "total_amount_cents": 44354
+                            },
+                            {
+                                "calendar_day": 42,
+                                "expected_settlement_date": "2025-01-27",
+                                "interest_amount_cents": 0,
+                                "order": 6,
+                                "subtotal_amount_cents": 42607,
+                                "total_amount_cents": 44354
+                            },
+                            {
+                                "calendar_day": 49,
+                                "expected_settlement_date": "2025-02-03",
+                                "interest_amount_cents": 0,
+                                "order": 7,
+                                "subtotal_amount_cents": 42607,
+                                "total_amount_cents": 44354
+                            },
+                            {
+                                "calendar_day": 56,
+                                "expected_settlement_date": "2025-02-10",
+                                "interest_amount_cents": 0,
+                                "order": 8,
+                                "subtotal_amount_cents": 42607,
+                                "total_amount_cents": 44354
+                            }
+                        ],
+                        "installments_interval": [
+                            7,
+                            14,
+                            21,
+                            28,
+                            35,
+                            42,
+                            49,
+                            56
+                        ],
+                        "interest_amount_cents": 0,
+                        "interest_rate_bps": 0,
+                        "merchant_service_fee_amount_cents": 13975,
+                        "merchant_service_fee_rate_bps": 410,
+                        "subtotal_amount_cents": 340860,
+                        "supplier_fee_amount_cents": 0,
+                        "supplier_fee_rate_bps": 0,
+                        "total_amount_cents": 354835
+                    },
+                    {
+                        "available": false,
+                        "created_at": "2024-12-18T12:33:39Z",
+                        "id": "e4e14fb0-6e36-44b2-9cac-3f806ff3970f",
+                        "installment_quantity": 9,
+                        "installments": [
+                            {
+                                "calendar_day": 7,
+                                "expected_settlement_date": "2024-12-23",
+                                "interest_amount_cents": 0,
+                                "order": 1,
+                                "subtotal_amount_cents": 37876,
+                                "total_amount_cents": 39959
+                            },
+                            {
+                                "calendar_day": 14,
+                                "expected_settlement_date": "2024-12-30",
+                                "interest_amount_cents": 0,
+                                "order": 2,
+                                "subtotal_amount_cents": 37873,
+                                "total_amount_cents": 39956
+                            },
+                            {
+                                "calendar_day": 21,
+                                "expected_settlement_date": "2025-01-06",
+                                "interest_amount_cents": 0,
+                                "order": 3,
+                                "subtotal_amount_cents": 37873,
+                                "total_amount_cents": 39956
+                            },
+                            {
+                                "calendar_day": 28,
+                                "expected_settlement_date": "2025-01-13",
+                                "interest_amount_cents": 0,
+                                "order": 4,
+                                "subtotal_amount_cents": 37873,
+                                "total_amount_cents": 39956
+                            },
+                            {
+                                "calendar_day": 35,
+                                "expected_settlement_date": "2025-01-20",
+                                "interest_amount_cents": 0,
+                                "order": 5,
+                                "subtotal_amount_cents": 37873,
+                                "total_amount_cents": 39956
+                            },
+                            {
+                                "calendar_day": 42,
+                                "expected_settlement_date": "2025-01-27",
+                                "interest_amount_cents": 0,
+                                "order": 6,
+                                "subtotal_amount_cents": 37873,
+                                "total_amount_cents": 39956
+                            },
+                            {
+                                "calendar_day": 49,
+                                "expected_settlement_date": "2025-02-03",
+                                "interest_amount_cents": 0,
+                                "order": 7,
+                                "subtotal_amount_cents": 37873,
+                                "total_amount_cents": 39956
+                            },
+                            {
+                                "calendar_day": 56,
+                                "expected_settlement_date": "2025-02-10",
+                                "interest_amount_cents": 0,
+                                "order": 8,
+                                "subtotal_amount_cents": 37873,
+                                "total_amount_cents": 39956
+                            },
+                            {
+                                "calendar_day": 63,
+                                "expected_settlement_date": "2025-02-17",
+                                "interest_amount_cents": 0,
+                                "order": 9,
+                                "subtotal_amount_cents": 37873,
+                                "total_amount_cents": 39956
+                            }
+                        ],
+                        "installments_interval": [
+                            7,
+                            14,
+                            21,
+                            28,
+                            35,
+                            42,
+                            49,
+                            56,
+                            63
+                        ],
+                        "interest_amount_cents": 0,
+                        "interest_rate_bps": 0,
+                        "merchant_service_fee_amount_cents": 18747,
+                        "merchant_service_fee_rate_bps": 550,
+                        "subtotal_amount_cents": 340860,
+                        "supplier_fee_amount_cents": 0,
+                        "supplier_fee_rate_bps": 0,
+                        "total_amount_cents": 359607
+                    },
+                    {
+                        "available": false,
+                        "created_at": "2024-12-18T12:33:39Z",
+                        "id": "0f80f961-06d3-4682-8816-82a548d301b5",
+                        "installment_quantity": 10,
+                        "installments": [
+                            {
+                                "calendar_day": 7,
+                                "expected_settlement_date": "2024-12-23",
+                                "interest_amount_cents": 0,
+                                "order": 1,
+                                "subtotal_amount_cents": 34086,
+                                "total_amount_cents": 35967
+                            },
+                            {
+                                "calendar_day": 14,
+                                "expected_settlement_date": "2024-12-30",
+                                "interest_amount_cents": 0,
+                                "order": 2,
+                                "subtotal_amount_cents": 34086,
+                                "total_amount_cents": 35960
+                            },
+                            {
+                                "calendar_day": 21,
+                                "expected_settlement_date": "2025-01-06",
+                                "interest_amount_cents": 0,
+                                "order": 3,
+                                "subtotal_amount_cents": 34086,
+                                "total_amount_cents": 35960
+                            },
+                            {
+                                "calendar_day": 28,
+                                "expected_settlement_date": "2025-01-13",
+                                "interest_amount_cents": 0,
+                                "order": 4,
+                                "subtotal_amount_cents": 34086,
+                                "total_amount_cents": 35960
+                            },
+                            {
+                                "calendar_day": 35,
+                                "expected_settlement_date": "2025-01-20",
+                                "interest_amount_cents": 0,
+                                "order": 5,
+                                "subtotal_amount_cents": 34086,
+                                "total_amount_cents": 35960
+                            },
+                            {
+                                "calendar_day": 42,
+                                "expected_settlement_date": "2025-01-27",
+                                "interest_amount_cents": 0,
+                                "order": 6,
+                                "subtotal_amount_cents": 34086,
+                                "total_amount_cents": 35960
+                            },
+                            {
+                                "calendar_day": 49,
+                                "expected_settlement_date": "2025-02-03",
+                                "interest_amount_cents": 0,
+                                "order": 7,
+                                "subtotal_amount_cents": 34086,
+                                "total_amount_cents": 35960
+                            },
+                            {
+                                "calendar_day": 56,
+                                "expected_settlement_date": "2025-02-10",
+                                "interest_amount_cents": 0,
+                                "order": 8,
+                                "subtotal_amount_cents": 34086,
+                                "total_amount_cents": 35960
+                            },
+                            {
+                                "calendar_day": 63,
+                                "expected_settlement_date": "2025-02-17",
+                                "interest_amount_cents": 0,
+                                "order": 9,
+                                "subtotal_amount_cents": 34086,
+                                "total_amount_cents": 35960
+                            },
+                            {
+                                "calendar_day": 70,
+                                "expected_settlement_date": "2025-02-24",
+                                "interest_amount_cents": 0,
+                                "order": 10,
+                                "subtotal_amount_cents": 34086,
+                                "total_amount_cents": 35960
+                            }
+                        ],
+                        "installments_interval": [
+                            7,
+                            14,
+                            21,
+                            28,
+                            35,
+                            42,
+                            49,
+                            56,
+                            63,
+                            70
+                        ],
+                        "interest_amount_cents": 0,
+                        "interest_rate_bps": 0,
+                        "merchant_service_fee_amount_cents": 18747,
+                        "merchant_service_fee_rate_bps": 550,
+                        "subtotal_amount_cents": 340860,
+                        "supplier_fee_amount_cents": 0,
+                        "supplier_fee_rate_bps": 0,
+                        "total_amount_cents": 359607
+                    },
+                    {
+                        "available": false,
+                        "created_at": "2024-12-18T12:33:39Z",
+                        "id": "38ae11d0-d1be-48e8-a394-e089eb431850",
+                        "installment_quantity": 11,
+                        "installments": [
+                            {
+                                "calendar_day": 7,
+                                "expected_settlement_date": "2024-12-23",
+                                "interest_amount_cents": 0,
+                                "order": 1,
+                                "subtotal_amount_cents": 30990,
+                                "total_amount_cents": 32697
+                            },
+                            {
+                                "calendar_day": 14,
+                                "expected_settlement_date": "2024-12-30",
+                                "interest_amount_cents": 0,
+                                "order": 2,
+                                "subtotal_amount_cents": 30987,
+                                "total_amount_cents": 32691
+                            },
+                            {
+                                "calendar_day": 21,
+                                "expected_settlement_date": "2025-01-06",
+                                "interest_amount_cents": 0,
+                                "order": 3,
+                                "subtotal_amount_cents": 30987,
+                                "total_amount_cents": 32691
+                            },
+                            {
+                                "calendar_day": 28,
+                                "expected_settlement_date": "2025-01-13",
+                                "interest_amount_cents": 0,
+                                "order": 4,
+                                "subtotal_amount_cents": 30987,
+                                "total_amount_cents": 32691
+                            },
+                            {
+                                "calendar_day": 35,
+                                "expected_settlement_date": "2025-01-20",
+                                "interest_amount_cents": 0,
+                                "order": 5,
+                                "subtotal_amount_cents": 30987,
+                                "total_amount_cents": 32691
+                            },
+                            {
+                                "calendar_day": 42,
+                                "expected_settlement_date": "2025-01-27",
+                                "interest_amount_cents": 0,
+                                "order": 6,
+                                "subtotal_amount_cents": 30987,
+                                "total_amount_cents": 32691
+                            },
+                            {
+                                "calendar_day": 49,
+                                "expected_settlement_date": "2025-02-03",
+                                "interest_amount_cents": 0,
+                                "order": 7,
+                                "subtotal_amount_cents": 30987,
+                                "total_amount_cents": 32691
+                            },
+                            {
+                                "calendar_day": 56,
+                                "expected_settlement_date": "2025-02-10",
+                                "interest_amount_cents": 0,
+                                "order": 8,
+                                "subtotal_amount_cents": 30987,
+                                "total_amount_cents": 32691
+                            },
+                            {
+                                "calendar_day": 63,
+                                "expected_settlement_date": "2025-02-17",
+                                "interest_amount_cents": 0,
+                                "order": 9,
+                                "subtotal_amount_cents": 30987,
+                                "total_amount_cents": 32691
+                            },
+                            {
+                                "calendar_day": 70,
+                                "expected_settlement_date": "2025-02-24",
+                                "interest_amount_cents": 0,
+                                "order": 10,
+                                "subtotal_amount_cents": 30987,
+                                "total_amount_cents": 32691
+                            },
+                            {
+                                "calendar_day": 77,
+                                "expected_settlement_date": "2025-03-03",
+                                "interest_amount_cents": 0,
+                                "order": 11,
+                                "subtotal_amount_cents": 30987,
+                                "total_amount_cents": 32691
+                            }
+                        ],
+                        "installments_interval": [
+                            7,
+                            14,
+                            21,
+                            28,
+                            35,
+                            42,
+                            49,
+                            56,
+                            63,
+                            70,
+                            77
+                        ],
+                        "interest_amount_cents": 0,
+                        "interest_rate_bps": 0,
+                        "merchant_service_fee_amount_cents": 18747,
+                        "merchant_service_fee_rate_bps": 550,
+                        "subtotal_amount_cents": 340860,
+                        "supplier_fee_amount_cents": 0,
+                        "supplier_fee_rate_bps": 0,
+                        "total_amount_cents": 359607
+                    },
+                    {
+                        "available": false,
+                        "created_at": "2024-12-18T12:33:39Z",
+                        "id": "c181c16b-105e-46d0-85a9-bab8a431d422",
+                        "installment_quantity": 12,
+                        "installments": [
+                            {
+                                "calendar_day": 7,
+                                "expected_settlement_date": "2024-12-23",
+                                "interest_amount_cents": 0,
+                                "order": 1,
+                                "subtotal_amount_cents": 28405,
+                                "total_amount_cents": 29970
+                            },
+                            {
+                                "calendar_day": 14,
+                                "expected_settlement_date": "2024-12-30",
+                                "interest_amount_cents": 0,
+                                "order": 2,
+                                "subtotal_amount_cents": 28405,
+                                "total_amount_cents": 29967
+                            },
+                            {
+                                "calendar_day": 21,
+                                "expected_settlement_date": "2025-01-06",
+                                "interest_amount_cents": 0,
+                                "order": 3,
+                                "subtotal_amount_cents": 28405,
+                                "total_amount_cents": 29967
+                            },
+                            {
+                                "calendar_day": 28,
+                                "expected_settlement_date": "2025-01-13",
+                                "interest_amount_cents": 0,
+                                "order": 4,
+                                "subtotal_amount_cents": 28405,
+                                "total_amount_cents": 29967
+                            },
+                            {
+                                "calendar_day": 35,
+                                "expected_settlement_date": "2025-01-20",
+                                "interest_amount_cents": 0,
+                                "order": 5,
+                                "subtotal_amount_cents": 28405,
+                                "total_amount_cents": 29967
+                            },
+                            {
+                                "calendar_day": 42,
+                                "expected_settlement_date": "2025-01-27",
+                                "interest_amount_cents": 0,
+                                "order": 6,
+                                "subtotal_amount_cents": 28405,
+                                "total_amount_cents": 29967
+                            },
+                            {
+                                "calendar_day": 49,
+                                "expected_settlement_date": "2025-02-03",
+                                "interest_amount_cents": 0,
+                                "order": 7,
+                                "subtotal_amount_cents": 28405,
+                                "total_amount_cents": 29967
+                            },
+                            {
+                                "calendar_day": 56,
+                                "expected_settlement_date": "2025-02-10",
+                                "interest_amount_cents": 0,
+                                "order": 8,
+                                "subtotal_amount_cents": 28405,
+                                "total_amount_cents": 29967
+                            },
+                            {
+                                "calendar_day": 63,
+                                "expected_settlement_date": "2025-02-17",
+                                "interest_amount_cents": 0,
+                                "order": 9,
+                                "subtotal_amount_cents": 28405,
+                                "total_amount_cents": 29967
+                            },
+                            {
+                                "calendar_day": 70,
+                                "expected_settlement_date": "2025-02-24",
+                                "interest_amount_cents": 0,
+                                "order": 10,
+                                "subtotal_amount_cents": 28405,
+                                "total_amount_cents": 29967
+                            },
+                            {
+                                "calendar_day": 77,
+                                "expected_settlement_date": "2025-03-03",
+                                "interest_amount_cents": 0,
+                                "order": 11,
+                                "subtotal_amount_cents": 28405,
+                                "total_amount_cents": 29967
+                            },
+                            {
+                                "calendar_day": 84,
+                                "expected_settlement_date": "2025-03-10",
+                                "interest_amount_cents": 0,
+                                "order": 12,
+                                "subtotal_amount_cents": 28405,
+                                "total_amount_cents": 29967
+                            }
+                        ],
+                        "installments_interval": [
+                            7,
+                            14,
+                            21,
+                            28,
+                            35,
+                            42,
+                            49,
+                            56,
+                            63,
+                            70,
+                            77,
+                            84
+                        ],
+                        "interest_amount_cents": 0,
+                        "interest_rate_bps": 0,
+                        "merchant_service_fee_amount_cents": 18747,
+                        "merchant_service_fee_rate_bps": 550,
+                        "subtotal_amount_cents": 340860,
+                        "supplier_fee_amount_cents": 0,
+                        "supplier_fee_rate_bps": 0,
+                        "total_amount_cents": 359607
+                    }
+                ]
+            },
+            "supplier_company_id": "teste",
+            "url_callback": "teste",
+            "user_fields": {
+                "ip_addr": "45.6.162.73",
+                "user_agent": "teste"
+            }
+        },
+        "external_transaction_id": "",
+        "external_transaction_status": "",
+        "created_at": "2024-12-18T12:33:39.13Z"
+    },
+    "response_document_data": {
+        "linked_transaction_id": "",
+        "transaction_id": "",
+        "fraud_verdict": "NOT_PROCESSED",
+        "fraud_score": 0,
+        "fraud_score_threshold": 0,
+        "fraud_verdict_details": {
+            "confirmation_status": "the samsung first fraud purchase analysis could not be confirmed because it was not able to perform the request to the client: checkFraud http client returned error. the request to the client returned an unexpected response. expected statusCode 201, got 408, response body: . LinkedTransactionID: teste",
+            "is_confirmed": false
+        },
+        "created_at": "0001-01-01T00:00:00Z",
+        "MerchantHistoricalData": {},
+        "ExtractedFeatures": {}
+    }
+}{
+    "message": "Internal Server Error"
+}
