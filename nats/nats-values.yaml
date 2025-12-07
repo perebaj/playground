@@ -49,7 +49,7 @@ tlsCA:
 ############################################################
 config:
   cluster:
-    enabled: false
+    enabled: true
     port: 6222
     # must be 2 or higher when jetstream is enabled
     replicas: 3
@@ -82,7 +82,7 @@ config:
     patch: []
 
   jetstream:
-    enabled: false
+    enabled: true
 
     fileStore:
       enabled: true
@@ -445,7 +445,7 @@ service:
     mqtt:
       enabled: true
     cluster:
-      enabled: false
+      enabled: true
     gateway:
       enabled: false
     monitor:
@@ -465,28 +465,50 @@ service:
 ############################################################
 
 # stateful set
+# StatefulSet is the resource that manages the pods of the NATs service.
 statefulSet:
-  # merge or patch the stateful set
-  # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#statefulset-v1-apps
-  merge: {}
+  merge:
+    spec:
+      template:
+        spec:
+          affinity:
+            # The scheduler will prefer to schedule pods to nodes that satisfy the affinity expressions specified by this field, but it may choose a node that violates one or more of the expressions. 
+            # TODO(@perebaj): As NATs is a sensitive service, we prefer to schedule the pods even if they violate the affinity expressions.
+            podAntiAffinity:
+              # The scheduler will prefer to schedule pods to nodes that satisfy the affinity expressions specified by this field, but it may choose a node that violates one or more of the expressions. 
+              # TODO(@perebaj): As NATs is a sensitive service, we prefer to schedule the pods even if they violate the affinity expressions.
+              preferredDuringSchedulingIgnoredDuringExecution:
+                # As we just have this role, we are setting it to get 100% of the preference.
+                - weight: 100
+                  # Simple rule, just share all the pods across the nodes that we have.
+                  podAffinityTerm:
+                    labelSelector:
+                      matchExpressions:
+                        - key: app.kubernetes.io/name
+                          operator: In
+                          # values is the list of values that the labelSelector will match.
+                          # In this case, we are matching the pods with the label app.kubernetes.io/name=nats.
+                          values:
+                            - nats
+                    topologyKey: kubernetes.io/hostname
   patch: []
   # defaults to "{{ include "nats.fullname" $ }}"
   name:
 
-# stateful set -> pod template
 podTemplate:
   # adds a hash of the ConfigMap as a pod annotation
   # this will cause the StatefulSet to roll when the ConfigMap is updated
   configChecksumAnnotation: true
-
-  # map of topologyKey: topologySpreadConstraint
-  # labelSelector will be added to match StatefulSet pods
-  #
-  # topologySpreadConstraints:
-  #   kubernetes.io/hostname:
-  #     maxSkew: 1
-  #
-  topologySpreadConstraints: {}
+  # JOJO Changed
+  # More: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#topologyspreadconstraint-v1-core
+  topologySpreadConstraints:
+    kubernetes.io/hostname:
+      # maxSkew is the maximum number of pods that can be scheduled on a node before the scheduler evicts an existing pod
+      # It means that we will tolerate 1 pod being scheduled on a node before the scheduler evicts an existing pod
+      maxSkew: 1
+      # ScheduleAnyway tells the scheduler to schedule the pod in any location, but giving higher precedence to topologies that would help reduce the skew
+      # TODO(@perebaj): Maybe this config could be DoNotSchedule, but as we are dealing with a sensitive service, we prefer to schedule the pod in any location.
+      whenUnsatisfiable: ScheduleAnyway
 
   # merge or patch the pod template
   # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#pod-v1-core
