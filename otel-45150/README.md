@@ -63,3 +63,5 @@ write_relabel_configs:
 ```bash
 docker compose down -v
 ```
+
+YAML example: https://github.com/prometheus/prometheus/blob/main/config/testdata/conf.good.yml

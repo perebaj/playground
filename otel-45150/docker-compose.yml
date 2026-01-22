@@ -13,11 +13,12 @@ services:
       - repro-net
 
   prometheus:
-    image: prom/prometheus:v2.54.1
+    image: prom/prometheus:v3.8.1
     container_name: prometheus
     command:
       - "--config.file=/etc/prometheus/prometheus.yml"
       - "--enable-feature=native-histograms"
+      - "--enable-feature=metadata-wal-records"
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
     ports:
