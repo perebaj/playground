@@ -18,16 +18,6 @@ docker compose up
 docker logs -f prometheus 2>&1 | grep -i "error\|fail"
 ```
 
-## Expected Error
-
-After ~30 seconds, you should see errors like:
-
-```
-non-recoverable error
-failedSampleCount=4
-"sent v2 request with 4 samples... but PRW 2.0 response header statistics indicate 0 samples were accepted"
-```
-
 ## How It Works
 
 1. **Prometheus** scrapes itself and adds `_generated=true` label to specific metrics
@@ -37,31 +27,9 @@ failedSampleCount=4
 3. **Bug trigger**: When a batch contains only `target_info` (no other matching metrics), the collector responds with `0 accepted samples`
 4. **Result**: Prometheus interprets this as a failure since it sent samples but none were accepted
 
-## Verify the Bug
-
-```bash
-# Check Prometheus remote write status
-curl -s http://localhost:9091/api/v1/status/runtimeinfo | jq '.data.storageRetention'
 
 # Check OTel Collector is receiving data
-docker logs otel-collector 2>&1 | grep -i "metric"
-```
+docker logs otel-collector
 
-## Workaround
 
-Remove `target_info` from the relabel config (loses resource attributes):
-
-```yaml
-write_relabel_configs:
-  - source_labels: [_generated]
-    regex: "true"
-    action: keep
-```
-
-## Cleanup
-
-```bash
-docker compose down -v
-```
-
-YAML example: https://github.com/prometheus/prometheus/blob/main/config/testdata/conf.good.yml
+.yaml that I used as example: https://github.com/prometheus/prometheus/blob/main/config/testdata/conf.good.yml
