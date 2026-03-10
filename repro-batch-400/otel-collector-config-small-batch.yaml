@@ -1,0 +1,59 @@
+# Same as partner config but with reduced batch size to verify the fix.
+# Use this to confirm that smaller batches resolve the 400 errors.
+
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+        include_metadata: true
+        keepalive:
+          server_parameters:
+            max_connection_idle: 5s
+      http:
+        endpoint: 0.0.0.0:4318
+        include_metadata: true
+
+processors:
+  memory_limiter:
+    check_interval: 1s
+    limit_percentage: 80
+    spike_limit_percentage: 20
+
+  batch/logs:
+    send_batch_size: 5000
+    send_batch_max_size: 5000
+    timeout: 5s
+
+exporters:
+  otlphttp/ollygarden:
+    endpoint: https://in.ollygarden.cloud
+    headers:
+      Authorization: "Bearer ${env:OLLY_GARDEN_API_KEY}"
+
+  debug:
+    verbosity: basic
+
+service:
+  extensions: []
+  pipelines:
+    logs:
+      receivers:
+        - otlp
+      processors:
+        - memory_limiter
+        - batch/logs
+      exporters:
+        - otlphttp/ollygarden
+        - debug
+
+  telemetry:
+    logs:
+      level: info
+    metrics:
+      readers:
+        - pull:
+            exporter:
+              prometheus:
+                host: 0.0.0.0
+                port: 8888

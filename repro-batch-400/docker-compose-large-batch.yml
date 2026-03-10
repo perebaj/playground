@@ -1,0 +1,36 @@
+services:
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:0.131.0
+    container_name: otel-collector-large-batch
+    command: ["--config=/etc/otel-collector-config.yaml"]
+    volumes:
+      - ./otel-collector-config-large-batch.yaml:/etc/otel-collector-config.yaml:ro
+    environment:
+      - OLLY_GARDEN_API_KEY=${OLLY_GARDEN_API_KEY}
+    ports:
+      - "4317:4317"
+      - "4318:4318"
+    networks:
+      - repro-net
+
+  log-generator:
+    image: ghcr.io/open-telemetry/opentelemetry-collector-contrib/telemetrygen:v0.131.0
+    container_name: log-generator-large-batch
+    command:
+      - logs
+      - --otlp-endpoint=otel-collector:4317
+      - --otlp-insecure
+      - --workers=10
+      - --rate=5000
+      - --duration=120s
+      - --otlp-attributes=service.namespace="e2e-batch-test"
+      - --severity-text=INFO
+      - --body="Batch size reproduction test log entry with some payload to increase message size for testing purposes"
+    depends_on:
+      - otel-collector
+    networks:
+      - repro-net
+
+networks:
+  repro-net:
+    driver: bridge
