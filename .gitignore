@@ -4,3 +4,4 @@ etl_dejt/clean
 
 __pycache__/
 */**/__pycache__
+.DS_Store
