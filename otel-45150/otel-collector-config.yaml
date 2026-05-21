@@ -1,0 +1,29 @@
+receivers:
+  # The prometheusremotewrite receiver - this is where the bug manifests
+  prometheusremotewrite:
+    endpoint: 0.0.0.0:9090
+
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
+
+processors:
+  batch:
+
+exporters:
+  debug:
+    verbosity: detailed
+
+service:
+  pipelines:
+    metrics:
+      receivers: [prometheusremotewrite, otlp]
+      processors: [batch]
+      exporters: [debug]
+
+  telemetry:
+    logs:
+      level: debug

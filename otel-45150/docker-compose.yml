@@ -1,0 +1,33 @@
+services:
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:0.142.0
+    container_name: otel-collector
+    command: ["--config=/etc/otel-collector-config.yaml"]
+    volumes:
+      - ./otel-collector-config.yaml:/etc/otel-collector-config.yaml:ro
+    ports:
+      - "9090:9090"   # prometheusremotewrite receiver
+      - "4317:4317"   # OTLP gRPC
+      - "4318:4318"   # OTLP HTTP
+    networks:
+      - repro-net
+
+  prometheus:
+    image: prom/prometheus:v3.8.1
+    container_name: prometheus
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--enable-feature=native-histograms"
+      - "--enable-feature=metadata-wal-records"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    ports:
+      - "9091:9090"   # Prometheus UI
+    depends_on:
+      - otel-collector
+    networks:
+      - repro-net
+
+networks:
+  repro-net:
+    driver: bridge
