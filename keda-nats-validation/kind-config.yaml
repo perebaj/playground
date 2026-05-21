@@ -1,0 +1,5 @@
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+name: keda-nats-validation
+nodes:
+  - role: control-plane

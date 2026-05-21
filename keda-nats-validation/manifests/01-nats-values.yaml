@@ -1,0 +1,18 @@
+# helm values for nats-io/nats chart.
+# Single-node JetStream with a small file store — enough for a few thousand
+# small messages while the demo runs.
+config:
+  cluster:
+    enabled: false
+  jetstream:
+    enabled: true
+    fileStore:
+      enabled: true
+      pvc:
+        size: 1Gi
+  monitor:
+    enabled: true
+    port: 8222
+container:
+  image:
+    tag: 2.10-alpine
