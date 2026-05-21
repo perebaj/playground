@@ -1,0 +1,52 @@
+# Exports to Go compression-bench with no compression on the wire.
+# The Go server receives raw protobuf and benchmarks all compression formats itself.
+# This gives accurate Go-native compression/decompression timings.
+
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+        include_metadata: true
+      http:
+        endpoint: 0.0.0.0:4318
+        include_metadata: true
+
+processors:
+  memory_limiter:
+    check_interval: 1s
+    limit_percentage: 80
+    spike_limit_percentage: 20
+
+  batch/large:
+    send_batch_size: 100000
+    send_batch_max_size: 100000
+    timeout: 15s
+
+exporters:
+  otlphttp/bench:
+    endpoint: http://compression-bench:4318
+    compression: none
+
+  debug:
+    verbosity: basic
+
+service:
+  extensions: []
+  pipelines:
+    logs:
+      receivers: [otlp]
+      processors: [memory_limiter, batch/large]
+      exporters: [otlphttp/bench, debug]
+    traces:
+      receivers: [otlp]
+      processors: [memory_limiter, batch/large]
+      exporters: [otlphttp/bench, debug]
+    metrics:
+      receivers: [otlp]
+      processors: [memory_limiter, batch/large]
+      exporters: [otlphttp/bench, debug]
+
+  telemetry:
+    logs:
+      level: info
