@@ -1,0 +1,47 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: nats-stream-setup
+  namespace: demo
+spec:
+  backoffLimit: 3
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - name: setup
+          image: natsio/nats-box:latest
+          env:
+            - name: NATS_URL
+              value: nats://nats.nats.svc.cluster.local:4222
+          command:
+            - sh
+            - -c
+            - |
+              set -e
+              echo "[setup] waiting for NATS to be ready..."
+              until nats --server="$NATS_URL" server check connection >/dev/null 2>&1; do
+                sleep 2
+              done
+
+              echo "[setup] ensuring stream test-stream exists..."
+              if ! nats --server="$NATS_URL" stream info test-stream >/dev/null 2>&1; then
+                nats --server="$NATS_URL" stream add test-stream \
+                  --subjects='test.>' \
+                  --storage=file \
+                  --replicas=1 \
+                  --defaults
+              fi
+
+              echo "[setup] ensuring consumer slow-consumer exists..."
+              if ! nats --server="$NATS_URL" consumer info test-stream slow-consumer >/dev/null 2>&1; then
+                nats --server="$NATS_URL" consumer add test-stream slow-consumer \
+                  --pull \
+                  --filter='test.>' \
+                  --ack=explicit \
+                  --defaults
+              fi
+
+              echo "[setup] done."
+              nats --server="$NATS_URL" stream info test-stream
+              nats --server="$NATS_URL" consumer info test-stream slow-consumer

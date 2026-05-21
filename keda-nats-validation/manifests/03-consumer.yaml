@@ -1,0 +1,84 @@
+# Slow consumer: loops `nats consumer next` with a sleep, so each pod
+# processes ~1 message every 5 seconds. KEDA scales the Deployment based on
+# the consumer's `num_pending` reported by the NATS monitoring API.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: slow-consumer
+  namespace: demo
+  labels:
+    app: slow-consumer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: slow-consumer
+  template:
+    metadata:
+      labels:
+        app: slow-consumer
+    spec:
+      containers:
+        - name: consumer
+          image: natsio/nats-box:latest
+          env:
+            - name: NATS_URL
+              value: nats://nats.nats.svc.cluster.local:4222
+            - name: SLEEP_SECONDS
+              value: "5"
+          command:
+            - sh
+            - -c
+            - |
+              set -e
+              echo "[consumer] waiting for stream test-stream..."
+              until nats --server="$NATS_URL" stream info test-stream >/dev/null 2>&1; do
+                sleep 2
+              done
+              echo "[consumer] entering pull loop (sleep ${SLEEP_SECONDS}s between messages)"
+              while true; do
+                nats --server="$NATS_URL" consumer next test-stream slow-consumer \
+                  --ack --wait=10s 2>/dev/null || true
+                sleep "$SLEEP_SECONDS"
+              done
+          resources:
+            requests:
+              cpu: 25m
+              memory: 32Mi
+            limits:
+              cpu: 100m
+              memory: 64Mi
+---
+# Helper pod that just sits idle so scripts can `kubectl exec` into it to
+# publish messages or inspect stream state via the nats CLI.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nats-tools
+  namespace: demo
+  labels:
+    app: nats-tools
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nats-tools
+  template:
+    metadata:
+      labels:
+        app: nats-tools
+    spec:
+      containers:
+        - name: tools
+          image: natsio/nats-box:latest
+          env:
+            - name: NATS_URL
+              value: nats://nats.nats.svc.cluster.local:4222
+          command: ["sh", "-c", "trap : TERM INT; sleep infinity & wait"]
+          resources:
+            requests:
+              cpu: 10m
+              memory: 16Mi
+            limits:
+              cpu: 50m
+              memory: 32Mi
