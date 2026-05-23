@@ -1,0 +1,47 @@
+[project]
+name = "argos-vision"
+version = "0.1.0"
+description = "Argos vision module — face capture, embedding, and celebrity matching."
+requires-python = ">=3.10,<3.13"
+dependencies = [
+    "facenet-pytorch>=2.6.0",
+    "kagglehub>=1.0.1",
+    "numpy>=1.26.4",
+    "opencv-python>=4.11.0.86",
+    "pillow>=10.2.0",
+]
+
+[project.scripts]
+argos-vision = "argos_vision.cli:main"
+
+[project.optional-dependencies]
+hf = [
+    "datasets>=2.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["argos_vision"]
+
+[tool.uv]
+package = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra -q"
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.0.3",
+    "ruff>=0.15.14",
+]

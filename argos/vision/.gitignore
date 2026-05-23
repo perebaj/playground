@@ -1,0 +1,15 @@
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# uv lockfile is committed; build artifacts are not
+dist/
+build/
+*.egg-info/
+
+# Cached embeddings (regenerated on first run)
+data/
