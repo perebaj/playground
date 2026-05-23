@@ -1,13 +1,16 @@
 """Tests for the pure search logic in CelebrityDatabase.
 
-These tests avoid the heavy ML model and the LFW dataset by constructing tiny
-synthetic embedding tables, which is enough to validate the cosine-similarity
-ranking that matching depends on.
+These tests avoid the heavy ML model and the celebrity datasets by constructing
+tiny synthetic embedding tables, which is enough to validate the cosine-similarity
+ranking that matching depends on, plus the on-disk format invariants the
+downstream OpenCV calls rely on.
 """
+
+from pathlib import Path
 
 import numpy as np
 
-from argos_vision.database import CelebrityDatabase
+from argos_vision.database import REPRESENTATIVE_SIZE, CelebrityDatabase, _to_uniform_uint8
 
 
 def _normalize(v: np.ndarray) -> np.ndarray:
@@ -43,6 +46,36 @@ def test_search_caps_top_k_at_database_size() -> None:
 
     matches = db.search(np.array([1.0, 0.0]), top_k=10)
     assert len(matches) == 2
+
+
+def test_to_uniform_uint8_returns_uint8_at_target_size() -> None:
+    img = np.random.randint(0, 255, size=(120, 80, 3), dtype=np.uint8)
+
+    out = _to_uniform_uint8(img)
+
+    assert out.dtype == np.uint8
+    assert out.shape == (*REPRESENTATIVE_SIZE, 3)
+
+
+def test_cached_images_roundtrip_as_uint8_not_object(tmp_path: Path) -> None:
+    # Regression: prior versions stored images with dtype=object, which numpy
+    # preserves on load even when shapes are uniform — that breaks cv2.resize
+    # downstream with "src data type = object is not supported".
+    embeddings = np.eye(3).astype(np.float32)
+    names = np.array(["A", "B", "C"])
+    raw = [np.full((100, 100, 3), v, dtype=np.uint8) for v in (10, 20, 30)]
+    images = np.stack([_to_uniform_uint8(img) for img in raw])
+    cache = tmp_path / "celebs.npz"
+    np.savez_compressed(cache, embeddings=embeddings, names=names, images=images)
+
+    data = np.load(cache, allow_pickle=True)
+    db = CelebrityDatabase(
+        embeddings=data["embeddings"], names=list(data["names"]), images=data["images"]
+    )
+
+    assert db.images.dtype == np.uint8
+    assert db.images[0].dtype == np.uint8
+    assert db.images[0].shape == (*REPRESENTATIVE_SIZE, 3)
 
 
 def test_search_returns_index_pointing_to_correct_name() -> None:

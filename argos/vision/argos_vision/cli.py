@@ -43,6 +43,9 @@ def show_result(
     target_h = 400
 
     def fit(img: np.ndarray) -> np.ndarray:
+        # Defensive: caches written before the uint8 fix may resurface as
+        # object dtype; cv2.resize rejects those, so coerce on the way in.
+        img = np.ascontiguousarray(img, dtype=np.uint8)
         ratio = target_h / img.shape[0]
         return cv2.resize(img, (int(img.shape[1] * ratio), target_h))
 

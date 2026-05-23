@@ -6,11 +6,23 @@ from collections.abc import Iterator
 from pathlib import Path
 
 import numpy as np
+from PIL import Image
 
 from .datasets import PersonImages
 from .face import FaceProcessor
 
 CACHE_DIR = Path(__file__).resolve().parent.parent / "data"
+
+# Representative images are stored at a uniform size so we can keep the cache
+# as a single uint8 ndarray. Saving with dtype=object preserves "object" on
+# load even when shapes happen to match, which breaks downstream cv2 calls.
+REPRESENTATIVE_SIZE = (256, 256)
+
+
+def _to_uniform_uint8(img: np.ndarray) -> np.ndarray:
+    """Resize an RGB image to REPRESENTATIVE_SIZE and return a contiguous uint8 array."""
+    pil = Image.fromarray(np.asarray(img, dtype=np.uint8)).resize(REPRESENTATIVE_SIZE)
+    return np.ascontiguousarray(np.asarray(pil, dtype=np.uint8))
 
 
 class CelebrityDatabase:
@@ -68,7 +80,7 @@ class CelebrityDatabase:
             mean_emb /= np.linalg.norm(mean_emb)
             valid_embeddings.append(mean_emb)
             valid_names.append(name)
-            valid_images.append(representative)
+            valid_images.append(_to_uniform_uint8(representative))
             if idx % 20 == 0:
                 print(f"  processed {idx} people  (kept {len(valid_names)})")
 
@@ -77,7 +89,7 @@ class CelebrityDatabase:
 
         embeddings = np.stack(valid_embeddings)
         names = np.array(valid_names)
-        images = np.array(valid_images, dtype=object)
+        images = np.stack(valid_images).astype(np.uint8, copy=False)
 
         cache_path.parent.mkdir(parents=True, exist_ok=True)
         np.savez_compressed(cache_path, embeddings=embeddings, names=names, images=images)
