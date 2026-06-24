@@ -1,0 +1,135 @@
+services:
+  payload-sizer:
+    image: python:3.12-slim
+    container_name: payload-sizer-large
+    volumes:
+      - ./payload-sizer.py:/app/payload-sizer.py:ro
+    command: ["sh", "-c", "pip install --quiet cramjam && python3 /app/payload-sizer.py"]
+    networks:
+      - repro-net
+
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:0.131.0
+    container_name: otel-collector-large-batch-sizer
+    command: ["--config=/etc/otel-collector-config.yaml"]
+    volumes:
+      - ./otel-collector-config-large-batch-sizer.yaml:/etc/otel-collector-config.yaml:ro
+    ports:
+      - "4317:4317"
+    depends_on:
+      - payload-sizer
+    networks:
+      - repro-net
+
+  # --- LOG GENERATORS ---
+  # Multiple workers with different service identities to simulate realistic multi-service traffic.
+  # Each has unique resource attributes so records aren't all identical.
+
+  log-gen-api:
+    image: ghcr.io/open-telemetry/opentelemetry-collector-contrib/telemetrygen:v0.131.0
+    container_name: log-gen-api
+    command:
+      - logs
+      - --otlp-endpoint=otel-collector:4317
+      - --otlp-insecure
+      - --workers=3
+      - --rate=3000
+      - --duration=60s
+      - --severity-text=INFO
+      - --body="[api-gateway] POST /api/v2/orders request_id=a]bf9c2e1 user_id=usr_8x7k2m status=200 latency_ms=142 region=eu-west-1 pod=api-gw-5d8f9-xk2m4"
+      - --telemetry-attributes=service.name="api-gateway",service.version="2.14.3",deployment.environment="production",host.name="api-gw-5d8f9-xk2m4",cloud.region="eu-west-1",cloud.provider="gcp"
+      - --otlp-attributes=http.method="POST",http.route="/api/v2/orders",http.status_code="200",user.tier="enterprise",request.size_bytes="4521",response.size_bytes="892"
+    depends_on: [otel-collector]
+    networks: [repro-net]
+
+  log-gen-worker:
+    image: ghcr.io/open-telemetry/opentelemetry-collector-contrib/telemetrygen:v0.131.0
+    container_name: log-gen-worker
+    command:
+      - logs
+      - --otlp-endpoint=otel-collector:4317
+      - --otlp-insecure
+      - --workers=3
+      - --rate=3000
+      - --duration=60s
+      - --severity-text=WARN
+      - --body="[order-processor] Processing order ord_9f2x8k for customer cust_m3k9x2 items=14 total=EUR_2847.50 warehouse=Frankfurt retry_count=2 queue_depth=847"
+      - --telemetry-attributes=service.name="order-processor",service.version="1.8.0",deployment.environment="production",host.name="worker-7c4b2-p9x1",cloud.region="eu-west-4",cloud.provider="gcp"
+      - --otlp-attributes=order.id="ord_9f2x8k",customer.id="cust_m3k9x2",queue.name="orders-high-priority",processing.stage="validation",db.system="postgresql"
+    depends_on: [otel-collector]
+    networks: [repro-net]
+
+  log-gen-auth:
+    image: ghcr.io/open-telemetry/opentelemetry-collector-contrib/telemetrygen:v0.131.0
+    container_name: log-gen-auth
+    command:
+      - logs
+      - --otlp-endpoint=otel-collector:4317
+      - --otlp-insecure
+      - --workers=2
+      - --rate=2000
+      - --duration=60s
+      - --severity-text=ERROR
+      - --body="[auth-service] Authentication failed for user usr_x9k2m token_type=bearer error=token_expired issuer=https://auth.example.com/oauth2 client_ip=198.51.100.42 user_agent=Mozilla/5.0"
+      - --telemetry-attributes=service.name="auth-service",service.version="3.2.1",deployment.environment="production",host.name="auth-8f7d3-m2x9",cloud.region="eu-west-4",cloud.provider="gcp"
+      - --otlp-attributes=auth.method="oauth2",auth.error="token_expired",net.peer.ip="198.51.100.42",http.user_agent="Mozilla/5.0 (X11; Linux x86_64)",enduser.scope="openid profile email"
+    depends_on: [otel-collector]
+    networks: [repro-net]
+
+  # --- TRACE GENERATORS ---
+
+  trace-gen-api:
+    image: ghcr.io/open-telemetry/opentelemetry-collector-contrib/telemetrygen:v0.131.0
+    container_name: trace-gen-api
+    command:
+      - traces
+      - --otlp-endpoint=otel-collector:4317
+      - --otlp-insecure
+      - --workers=3
+      - --rate=2000
+      - --duration=60s
+      - --span-duration=150ms
+      - --status-code=Ok
+      - --telemetry-attributes=service.name="api-gateway",service.version="2.14.3",deployment.environment="production",host.name="api-gw-5d8f9-xk2m4",cloud.region="eu-west-1"
+      - --otlp-attributes=http.method="GET",http.route="/api/v2/users/:id",http.status_code="200",db.system="postgresql",db.statement="SELECT * FROM users WHERE id = $1",net.peer.name="db-primary.internal"
+    depends_on: [otel-collector]
+    networks: [repro-net]
+
+  trace-gen-worker:
+    image: ghcr.io/open-telemetry/opentelemetry-collector-contrib/telemetrygen:v0.131.0
+    container_name: trace-gen-worker
+    command:
+      - traces
+      - --otlp-endpoint=otel-collector:4317
+      - --otlp-insecure
+      - --workers=3
+      - --rate=2000
+      - --duration=60s
+      - --span-duration=500ms
+      - --status-code=Error
+      - --telemetry-attributes=service.name="payment-service",service.version="4.1.0",deployment.environment="production",host.name="pay-2c9f1-k8x3",cloud.region="eu-west-4"
+      - --otlp-attributes=rpc.system="grpc",rpc.service="PaymentService",rpc.method="ProcessPayment",payment.provider="stripe",payment.currency="EUR",net.peer.name="stripe-api.internal"
+    depends_on: [otel-collector]
+    networks: [repro-net]
+
+  # --- METRIC GENERATORS ---
+
+  metric-gen:
+    image: ghcr.io/open-telemetry/opentelemetry-collector-contrib/telemetrygen:v0.131.0
+    container_name: metric-gen
+    command:
+      - metrics
+      - --otlp-endpoint=otel-collector:4317
+      - --otlp-insecure
+      - --workers=5
+      - --rate=5000
+      - --duration=60s
+      - --metric-type=Sum
+      - --telemetry-attributes=service.name="infra-monitor",service.version="1.0.0",deployment.environment="production",host.name="monitor-4a8c2-j7x9",cloud.region="eu-west-4"
+      - --otlp-attributes=container.name="api-gateway",k8s.pod.name="api-gw-5d8f9-xk2m4",k8s.namespace.name="production",k8s.node.name="gke-prod-pool-1-abc123"
+    depends_on: [otel-collector]
+    networks: [repro-net]
+
+networks:
+  repro-net:
+    driver: bridge

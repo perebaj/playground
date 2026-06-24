@@ -1,0 +1,68 @@
+# Reproduces partner config with 100K batch size that causes 400 errors.
+
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+        include_metadata: true
+        keepalive:
+          server_parameters:
+            max_connection_idle: 5s
+      http:
+        endpoint: 0.0.0.0:4318
+        include_metadata: true
+
+processors:
+  memory_limiter:
+    check_interval: 1s
+    limit_percentage: 80
+    spike_limit_percentage: 20
+
+  batch/logs_process:
+    metadata_keys:
+      - X-Scope-OrgID
+    send_batch_size: 10000
+    send_batch_max_size: 10000
+    timeout: 1s
+
+  attributes:
+    actions:
+      - action: upsert
+        from_context: X-Scope-OrgID
+        key: X-Scope-OrgID
+
+  batch/logs_export:
+    metadata_keys:
+      - X-Scope-OrgID
+    send_batch_size: 100000
+    send_batch_max_size: 100000
+    timeout: 10s
+
+exporters:
+  otlphttp/ollygarden:
+    endpoint: https://in.ollygarden.cloud
+    headers:
+      Authorization: "Bearer ${env:OLLY_GARDEN_API_KEY}"
+
+  debug:
+    verbosity: basic
+
+service:
+  extensions: []
+  pipelines:
+    logs:
+      receivers:
+        - otlp
+      processors:
+        - memory_limiter
+        - batch/logs_process
+        - attributes
+        - batch/logs_export
+      exporters:
+        - otlphttp/ollygarden
+        - debug
+
+  telemetry:
+    logs:
+      level: info

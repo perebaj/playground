@@ -1,0 +1,63 @@
+# Small batch (5K) — exports to local payload-sizer with all compression formats.
+# Tests all signal types: logs, traces, and metrics.
+
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+        include_metadata: true
+      http:
+        endpoint: 0.0.0.0:4318
+        include_metadata: true
+
+processors:
+  memory_limiter:
+    check_interval: 1s
+    limit_percentage: 80
+    spike_limit_percentage: 20
+
+  batch/small:
+    send_batch_size: 5000
+    send_batch_max_size: 5000
+    timeout: 5s
+
+exporters:
+  otlphttp/gzip:
+    endpoint: http://payload-sizer:4318
+    compression: gzip
+
+  otlphttp/none:
+    endpoint: http://payload-sizer:4319
+    compression: none
+
+  otlphttp/snappy:
+    endpoint: http://payload-sizer:4320
+    compression: snappy
+
+  otlphttp/zstd:
+    endpoint: http://payload-sizer:4321
+    compression: zstd
+
+  debug:
+    verbosity: basic
+
+service:
+  extensions: []
+  pipelines:
+    logs:
+      receivers: [otlp]
+      processors: [memory_limiter, batch/small]
+      exporters: [otlphttp/gzip, otlphttp/none, otlphttp/snappy, otlphttp/zstd, debug]
+    traces:
+      receivers: [otlp]
+      processors: [memory_limiter, batch/small]
+      exporters: [otlphttp/gzip, otlphttp/none, otlphttp/snappy, otlphttp/zstd, debug]
+    metrics:
+      receivers: [otlp]
+      processors: [memory_limiter, batch/small]
+      exporters: [otlphttp/gzip, otlphttp/none, otlphttp/snappy, otlphttp/zstd, debug]
+
+  telemetry:
+    logs:
+      level: info
