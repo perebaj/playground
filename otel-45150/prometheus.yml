@@ -1,0 +1,21 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+  - job_name: "prometheus"
+    static_configs:
+      - targets: ["localhost:9090"]
+    metric_relabel_configs:
+      - source_labels: [__name__]
+        regex: "prometheus_build_info|prometheus_engine_query_duration_seconds_count"
+        target_label: _generated
+        replacement: "true"
+
+remote_write:
+  - url: "http://otel-collector:9090/api/v1/write"
+    protobuf_message: "io.prometheus.write.v2.Request"
+    write_relabel_configs:
+      - source_labels: [__name__, _generated]
+        regex: "target_info;.*|.*;true"
+        action: keep
