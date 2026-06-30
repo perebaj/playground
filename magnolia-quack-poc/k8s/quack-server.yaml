@@ -1,0 +1,84 @@
+# Quack server pod for the local POC.
+#
+# Approach: an off-the-shelf duckdb container runs an init SQL that loads the
+# quack extension, declares views over the hive-partitioned fixture parquets,
+# and calls quack_serve() to start the RPC listener on 9494. A tail -f keeps
+# stdin open so duckdb does not exit after running the init script.
+#
+# Production-grade is a separate concern; this manifest exists to validate
+# the architecture on a kind cluster, not to ship.
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: quack-init
+data:
+  init.sql: |
+    LOAD quack;
+    LOAD httpfs;
+
+    CREATE OR REPLACE VIEW traces AS
+      SELECT * FROM read_parquet('/fixtures/org_id=*/tables/traces/date=*/data.parquet', hive_partitioning=true);
+    CREATE OR REPLACE VIEW logs AS
+      SELECT * FROM read_parquet('/fixtures/org_id=*/tables/logs/date=*/data.parquet', hive_partitioning=true);
+    CREATE OR REPLACE VIEW metrics_gauge AS
+      SELECT * FROM read_parquet('/fixtures/org_id=*/tables/metrics_gauge/date=*/data.parquet', hive_partitioning=true);
+    CREATE OR REPLACE VIEW metrics_sum AS
+      SELECT * FROM read_parquet('/fixtures/org_id=*/tables/metrics_sum/date=*/data.parquet', hive_partitioning=true);
+    CREATE OR REPLACE VIEW metrics_histogram AS
+      SELECT * FROM read_parquet('/fixtures/org_id=*/tables/metrics_histogram/date=*/data.parquet', hive_partitioning=true);
+
+    CALL quack_serve('quack:0.0.0.0:9494', token := 'spike_token', allow_other_hostname := true);
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: quack-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: quack-server
+  template:
+    metadata:
+      labels:
+        app: quack-server
+    spec:
+      containers:
+        - name: duckdb
+          image: quack-duckdb:local
+          imagePullPolicy: Never
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              { cat /init/init.sql; tail -f /dev/null; } | /usr/local/bin/duckdb
+          ports:
+            - containerPort: 9494
+              name: quack
+          volumeMounts:
+            - name: init
+              mountPath: /init
+            - name: fixtures
+              mountPath: /fixtures
+              readOnly: true
+      volumes:
+        - name: init
+          configMap:
+            name: quack-init
+        - name: fixtures
+          hostPath:
+            path: /fixtures
+            type: Directory
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: quack-server
+spec:
+  type: ClusterIP
+  selector:
+    app: quack-server
+  ports:
+    - name: quack
+      port: 9494
+      targetPort: 9494

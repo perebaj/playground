@@ -1,0 +1,29 @@
+#!/bin/bash
+# Tiny helper: send a single SQL statement to the local Quack server and
+# print the result. Hides the LOAD quack + CREATE SECRET boilerplate so you
+# can just type `./scripts/q "SHOW TABLES"`.
+#
+# Assumes the server is reachable at localhost:9494 (true after `make serve`
+# OR after `make kind-portforward` against the kind cluster).
+set -euo pipefail
+
+if [[ $# -eq 0 ]]; then
+  cat <<'USAGE'
+usage: scripts/q "<SQL>"
+
+examples:
+  scripts/q "SHOW TABLES"
+  scripts/q "SELECT count(*) FROM traces"
+  scripts/q "SELECT org_id, count(*) FROM traces GROUP BY 1"
+  scripts/q "DESCRIBE traces"
+USAGE
+  exit 1
+fi
+
+SQL="$*"
+
+duckdb -c "
+LOAD quack;
+CREATE OR REPLACE SECRET q (TYPE quack, TOKEN 'spike_token');
+SELECT * FROM quack_query('quack:localhost:9494', \$\$ $SQL \$\$);
+" 2>&1 | tail -n +5
