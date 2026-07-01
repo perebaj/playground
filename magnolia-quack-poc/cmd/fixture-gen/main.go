@@ -140,17 +140,25 @@ var orgs = []orgProfile{
 var dates = []string{"2026-06-22", "2026-06-29"}
 
 // Row counts kept small on purpose — this fixture exists to exercise the
-// shape, not the scale.
+// shape, not the scale. Defaults chosen so the six per-signal parquets
+// stay under 1 MB combined and load instantly. Override any of them via
+// flags to stress specific dimensions (e.g. -traces 60000 to reproduce
+// upstream quack extension bugs that only trigger past ~20k rows).
 const (
-	tracesPerFile    = 50
-	logsPerFile      = 100
-	gaugePerFile     = 200
-	sumPerFile       = 200
-	histogramPerFile = 50
+	defaultTracesPerFile    = 50
+	defaultLogsPerFile      = 100
+	defaultGaugePerFile     = 200
+	defaultSumPerFile       = 200
+	defaultHistogramPerFile = 50
 )
 
 func main() {
 	out := flag.String("out", "./fixtures", "output directory for parquet fixtures")
+	tracesPerFile := flag.Int("traces", defaultTracesPerFile, "traces rows per parquet file")
+	logsPerFile := flag.Int("logs", defaultLogsPerFile, "logs rows per parquet file")
+	gaugePerFile := flag.Int("gauge", defaultGaugePerFile, "metrics_gauge rows per parquet file")
+	sumPerFile := flag.Int("sum", defaultSumPerFile, "metrics_sum rows per parquet file")
+	histogramPerFile := flag.Int("histogram", defaultHistogramPerFile, "metrics_histogram rows per parquet file")
 	flag.Parse()
 
 	for _, org := range orgs {
@@ -159,19 +167,20 @@ func main() {
 			ts := dateToUnixNanos(date)
 
 			writeParquet(filepath.Join(*out, "org_id="+org.id, "tables", "traces", "date="+date, "data.parquet"),
-				traces(rng, org, ts, tracesPerFile))
+				traces(rng, org, ts, *tracesPerFile))
 			writeParquet(filepath.Join(*out, "org_id="+org.id, "tables", "logs", "date="+date, "data.parquet"),
-				logs(rng, org, ts, logsPerFile))
+				logs(rng, org, ts, *logsPerFile))
 			writeParquet(filepath.Join(*out, "org_id="+org.id, "tables", "metrics_gauge", "date="+date, "data.parquet"),
-				gauges(rng, org, ts, gaugePerFile))
+				gauges(rng, org, ts, *gaugePerFile))
 			writeParquet(filepath.Join(*out, "org_id="+org.id, "tables", "metrics_sum", "date="+date, "data.parquet"),
-				sums(rng, org, ts, sumPerFile))
+				sums(rng, org, ts, *sumPerFile))
 			writeParquet(filepath.Join(*out, "org_id="+org.id, "tables", "metrics_histogram", "date="+date, "data.parquet"),
-				histograms(rng, org, ts, histogramPerFile))
+				histograms(rng, org, ts, *histogramPerFile))
 		}
 	}
 
-	log.Printf("wrote fixtures to %s for %d orgs × %d dates × 5 signals", *out, len(orgs), len(dates))
+	log.Printf("wrote fixtures to %s for %d orgs × %d dates × 5 signals (traces=%d/file)",
+		*out, len(orgs), len(dates), *tracesPerFile)
 }
 
 func traces(rng *rand.Rand, org orgProfile, ts int64, n int) []Trace {
