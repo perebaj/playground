@@ -1,12 +1,10 @@
-# M2: QuackScan client-side crash on large server-side aggregations
+# M2: `QuackScan` client-side crash on column-narrowing projections past a row threshold
 
 ## TL;DR
 
-Any client query that makes the Quack server aggregate over more than
-~20-50k rows of the `traces` view crashes the **client** with an
-`InternalException` inside `QuackScan`. The server stays healthy — its
-memory doesn't spike, `quack_serve` keeps listening. Streaming small
-row sets and aggregations over smaller tables both work fine.
+Any client query that asks the Quack server to return a `DataChunk` with **fewer columns than the underlying view** — projection, `count(*)`, aggregation, `SELECT c1 FROM two_col_view` — crashes the **client** with an `InternalException` inside `QuackScan` once the underlying data crosses a row-count threshold. The server stays healthy. Streaming the full-width schema (`SELECT * FROM view`) works at every volume we tested (up to 360k rows).
+
+Minimal repro is **two BIGINT columns and ~26k rows** — no traces schema, no S3, no httpfs, no JSON, no UBIGINT.
 
 Reproducible locally with a single script:
 
@@ -14,70 +12,78 @@ Reproducible locally with a single script:
 scripts/repro-quackscan-bug.sh
 ```
 
-Full write-up below. The output belongs verbatim in an upstream issue
-against `duckdb/duckdb-quack` if we decide to file one.
-
-## What we found
-
-Rolling out the query engine to our internal Kubernetes cluster with
-real magnolia-sampler output (125k rows across 5 parquet files),
-`SELECT count(*) FROM q.traces` crashed the client immediately. The
-same query executed directly on the pod's DuckDB instance (bypassing
-Quack) returned `125000` and change without issue.
-
 ## Minimal reproduction
 
-Uses the POC's fixture generator (which now supports a `-traces` flag)
-plus the existing `quack-duckdb` Docker image.
-
-```sh
-# 1. Generate fixtures with 60k rows per traces file (6 files → 360k rows)
-go build -o bin/fixture-gen ./cmd/fixture-gen/
-./bin/fixture-gen -traces 60000 -out ./fixtures
-
-# 2. Start quack server in Docker
-cat > /tmp/init.sql << 'SQL'
-INSTALL quack; INSTALL httpfs;
-LOAD quack; LOAD httpfs;
-CREATE OR REPLACE VIEW traces AS
-  SELECT * FROM read_parquet('/fixtures/org_id=*/tables/traces/date=*/data.parquet', hive_partitioning=true);
-CALL quack_serve('quack:[::]:9494', token := 'localtoken', allow_other_hostname := true);
-SQL
-
-docker run -d --name quack --platform linux/amd64 \
-  -v "$PWD/fixtures:/fixtures:ro" \
-  -v /tmp/init.sql:/init/init.sql:ro \
-  -p 9494:9494 \
-  --entrypoint /bin/sh \
-  ghcr.io/ollygarden/magnolia/quack-duckdb:0.0.48 \
-  -c 'set -eu; rm -f /tmp/f; mkfifo /tmp/f; tail -f /dev/null > /tmp/f & HOME=/tmp exec /usr/local/bin/duckdb -init /init/init.sql < /tmp/f'
-
-# 3. Client: crash query
-duckdb -c "INSTALL quack; LOAD quack;
-ATTACH 'localhost:9494' AS q (TYPE quack, TOKEN 'localtoken');
-SELECT count(*) FROM (SELECT * FROM q.traces LIMIT 50000);"
+```sql
+-- 1. Trivial parquet: two BIGINT columns, one row per range value.
+COPY (SELECT range::BIGINT AS c1, range::BIGINT AS c2 FROM range(26624))
+  TO 'p.parquet' (FORMAT PARQUET);
 ```
 
-Result: `InternalException` stack trace ending in `QuackScan`. Changing
-`LIMIT 50000` to `LIMIT 20000` returns `20000` cleanly.
+Server (any Quack instance):
 
-## Observed threshold
+```sql
+LOAD quack; LOAD httpfs;
+CREATE OR REPLACE VIEW v AS SELECT * FROM read_parquet('p.parquet');
+CALL quack_serve('quack:[::]:9494', token := 't', allow_other_hostname := true);
+```
 
-Swept the LIMIT to bracket the trigger, both locally (this POC) and
-against a real S3+httpfs server on Kubernetes. Same threshold both
-places:
+Client:
 
-| Rows LIMIT (server materializes) | Result   |
-| -------------------------------- | -------- |
-| 100                              | ✅ OK     |
-| 10 000                           | ✅ OK     |
-| 20 000                           | ✅ OK     |
-| 50 000                           | ❌ CRASH  |
-| 100 000                          | ❌ CRASH  |
+```sql
+INSTALL quack; LOAD quack;
+ATTACH 'localhost:9494' AS q (TYPE quack, TOKEN 't');
 
-Not binary-searched to a precise cutoff, but the fault line is between
-20k and 50k rows on both DuckDB 1.5.4 (server) and DuckDB 1.5.3–1.5.4
-(client).
+-- Works: full-schema passthrough
+SELECT * FROM q.v;
+SELECT c1, c2 FROM q.v;
+SELECT c1 + c2 AS s FROM q.v;
+
+-- Crashes: response DataChunk has fewer columns than the source view
+SELECT c1 FROM q.v;        -- InternalException in QuackScan
+SELECT c2 FROM q.v;        -- InternalException in QuackScan
+SELECT count(*) FROM q.v;  -- InternalException in QuackScan
+```
+
+## Observed pass/crash matrix
+
+All against the same `v` view over a 2-BIGINT-column parquet, `n` rows.
+
+| Query                                       | Row count | Response columns | Result   |
+| ------------------------------------------- | --------- | ---------------- | -------- |
+| `SELECT * FROM q.v`                         | 26 624    | 2 (=source)      | ✅ OK     |
+| `SELECT c1, c2 FROM q.v`                    | 26 624    | 2 (=source)      | ✅ OK     |
+| `SELECT c1 + c2 AS s FROM q.v`              | 26 624    | 1 (derived)      | ✅ OK     |
+| `SELECT c1, c2 FROM q.v WHERE c1 > -1`      | 26 624    | 2 (=source)      | ✅ OK     |
+| `SELECT c1 FROM q.v`                        | 26 624    | 1 (< source)     | ❌ CRASH  |
+| `SELECT c2 FROM q.v`                        | 26 624    | 1 (< source)     | ❌ CRASH  |
+| `SELECT c1 FROM q.v WHERE c1 > 0`           | 26 624    | 1 (< source)     | ❌ CRASH  |
+| `SELECT count(*) FROM q.v`                  | 26 624    | 1 (aggregate)    | ❌ CRASH  |
+| `SELECT c1 FROM q.v` (small)                | 22 528    | 1 (< source)     | ✅ OK     |
+| `SELECT count(*) FROM q.v` (small)          | 22 528    | 1 (aggregate)    | ✅ OK     |
+
+Observations:
+
+- The trigger is **response columns < source view columns**, not aggregation per se. `SELECT c1` and `SELECT count(*)` both fail; `SELECT c1 + c2` and `SELECT *` both pass.
+- The trigger is **not** column projection alone. It requires a row-count threshold too: identical projections work fine on the same schema at 22 528 rows.
+- Below the threshold, every query on our two-column parquet succeeds.
+
+## Row-count threshold sweep
+
+Two BIGINT columns, varying row counts. DuckDB's `STANDARD_VECTOR_SIZE` is 2048 (that's why we sweep in 2048-row multiples):
+
+| Rows (n × 2048 chunks) | `count(*)` | Notes |
+| ---------------------- | ---------- | ----- |
+| 20 480 (10 chunks)     | ✅ OK       |       |
+| 22 528 (11 chunks)     | ✅ OK       |       |
+| 24 576 (12 chunks)     | ✅ OK       |       |
+| 26 624 (13 chunks)     | ❌ CRASH    |       |
+| 28 672 (14 chunks)     | ❌ CRASH    |       |
+| 60 000                 | ❌ CRASH    |       |
+
+Fault line lands between 24 576 (12 chunks) and 26 624 (13 chunks) for two BIGINT columns.
+
+Three BIGINT columns: `count(*) FROM q.v` on a 20 480-row parquet passes; 60 000-row parquet crashes — threshold is higher than 20 480 rows for 3-col, so it's not just chunk count. Whatever the fault line's shape, we didn't binary-search across (rows × columns) combinations exhaustively.
 
 ## Stack trace
 
@@ -103,66 +109,36 @@ Stack Trace:
 11       duckdb::TaskScheduler::ExecuteForever(...)
 ```
 
-The `InternalException` constructor variant with two `LogicalType&`
-arguments strongly suggests a type mismatch check firing inside
-`Vector::Reference`. The immediate caller is `QuackScan` feeding
-`DataChunk::Reference`.
+The `InternalException` constructor variant carrying two `LogicalType&` arguments strongly suggests a type-mismatch check firing inside `Vector::Reference`. The immediate caller is `QuackScan` handing a `DataChunk` into `Reference`. Best guess: the destination `DataChunk` on the client side was allocated with the source view's schema (2 cols) while the incoming chunk has a projected schema (1 col), and `Reference` refuses to point a v[0] slot of type `BIGINT` at a source that has a different column layout.
 
 ## What we ruled out
 
 Spent an afternoon narrowing this down. Confirmed **not** the cause:
 
-1. **Column type oddities**. `traces` has `Duration UBIGINT NOT NULL`
-   and multiple JSON-in-VARCHAR columns (`Events`, `Links`,
-   `SpanAttributes`, `ResourceAttributes`). Streaming each individually
-   via `SELECT <col> FROM q.traces LIMIT 5` works fine.
-   `count(*) FROM q.metrics_histogram` (which also has a `UBIGINT`
-   column, `Count`) works. So it isn't a per-column serialization
-   issue.
-
-2. **httpfs, hive_partitioning, S3 specifically**. Aggregations against
-   the smaller views (`q.metrics_gauge`, `q.metrics_histogram`,
-   `q.logs`) — same httpfs/hive machinery, different row counts —
-   return correct results. And the local POC uses plain filesystem
-   parquet (no httpfs); same crash.
-
-3. **Server-side OOM or crash**. During the failing query, server pod
-   memory hovers around 1.0-1.15 GB (limit 2 Gi), never approaches the
-   ceiling. Server keeps running, no restarts, logs show `quack_serve`
-   still active after the client crash. So the server is fine.
-
-4. **Wire-format skew**. Reproduced with matched client + server (both
-   DuckDB 1.5.4, same image). Also reproduced with client 1.5.3 against
-   server 1.5.4 — same failure. Not a version mismatch.
-
-5. **Aggregation itself**. `count(*) FROM q.traces WHERE 1=0` returns 0
-   cleanly (planner elides the scan). The failure only manifests when
-   the server actually reads chunks.
+1. **Any specific column type.** Bug reproduces on plain `BIGINT`/`BIGINT` — no UBIGINT, no JSON-in-VARCHAR, no nullability, no nested types.
+2. **The traces schema specifically.** Same crash on `logs` (which has no UBIGINT), and on our synthesized two-column BIGINT parquet.
+3. **httpfs, S3, or hive_partitioning.** Reproduces with a plain local `read_parquet('/path/file.parquet')` in Docker.
+4. **Number of parquet files.** Reproduces with a single parquet file.
+5. **Row count alone.** `SELECT * FROM q.range_view` (built-in `range()` table function, single BIGINT, no file) at 60 000 rows works. `SELECT * FROM q.v1_bigint` at 60 000 rows works. It's row count *combined with* column narrowing.
+6. **Aggregation semantics.** `SELECT c1 + c2 AS s FROM q.v` at 26 624 rows works (single-column output, expression). `SELECT c1 FROM q.v` at the same volume crashes. It's not aggregation, it's schema narrowing.
+7. **Server-side OOM.** During the failing query, container memory stays flat at ~150 MB, well below the 512 Mi limit. Server keeps running, no restarts, `quack_serve` still listed as active in the server logs.
+8. **Wire-format skew.** Reproduces with matched client + server (both DuckDB 1.5.4, same image). Also reproduces with client 1.5.3 against server 1.5.4.
+9. **`WHERE 1=0` short-circuit avoids the crash** — the planner elides the scan entirely, so the failure only manifests when the server actually reads chunks.
 
 ## What remains as the trigger
 
-The only differential we couldn't eliminate is the **number of rows
-the server materializes during the scan**. Anything ≤ ~20k rows: OK.
-Anything ≥ 50k rows: crash. Behavior is identical across `count(*)`,
-`SUM(1)`, `count(<col>)`, and windowed `count(*) OVER () … LIMIT 1`.
+The single differential we couldn't eliminate is a combination:
 
-Reads like an off-by-something or an unhandled edge in the streaming
-RPC that only fires past a threshold — probably a chunk boundary,
-buffer boundary, or a type descriptor that only gets renegotiated once
-the first N chunks are streamed.
+- **The response `DataChunk` has fewer columns than the source view's schema** — either via explicit projection, filtering with projection, or aggregation.
+- **The server has to stream more than roughly 12–13 default-width chunks** to satisfy the query (~24 576–26 624 rows for 2-column data). Fault line shifts with column count in ways we didn't fully characterize.
+
+Both conditions together: crash. Either alone: no crash. Full-schema streaming (`SELECT *`) is unaffected at any tested volume.
 
 ## Environment
 
-- Server image: `ghcr.io/ollygarden/magnolia/quack-duckdb:0.0.48`
-  (Debian bookworm-slim + DuckDB 1.5.4 static + `INSTALL quack`,
-  `INSTALL httpfs` baked at build time).
-- Client: DuckDB 1.5.3 macOS arm64 and DuckDB 1.5.4 linux amd64 (same
-  failure on both).
+- Server image: `ghcr.io/ollygarden/magnolia/quack-duckdb:0.0.48` (Debian bookworm-slim + DuckDB 1.5.4 static + `INSTALL quack`, `INSTALL httpfs` baked at build time).
+- Client: DuckDB 1.5.3 macOS arm64 and DuckDB 1.5.4 linux amd64 (same failure on both).
 - Quack extension: whatever `INSTALL quack` pulls for DuckDB 1.5.4.
-- Data: 6 parquet files, 60k rows each, OTLP `traces` schema
-  (VARCHAR + JSON-as-VARCHAR + UBIGINT + BIGINT columns). Same crash
-  reproduces with a single 60k-row file — number of files isn't
-  material.
+- Data: single-file parquet, 2 columns × 26 624 rows of `BIGINT`. Same behavior on multi-file hive-partitioned views.
 
-Happy to run more targeted repros (specific chunk counts, specific
-vector widths) if that helps narrow the fault line.
+Happy to run more targeted repros (specific chunk widths, other projected column combinations, alternative `Reference()`-triggering statements) if that helps narrow the fault line further.
