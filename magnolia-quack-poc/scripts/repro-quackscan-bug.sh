@@ -1,11 +1,12 @@
 #!/bin/bash
 # Reproduce the QuackScan column-narrowing crash locally.
 #
-# The bug: any query that asks the server to return a DataChunk with
-# fewer columns than the underlying view (projection, aggregation)
-# crashes the client with an `InternalException` in QuackScan once the
-# underlying data crosses a row-count threshold. `SELECT * FROM view`
-# (full-schema passthrough) works at every volume.
+# The bug: a client query that returns fewer columns than the source
+# catalog object (projection, count(*), aggregation) crashes the client
+# with an `InternalException` in QuackScan — but ONLY when the source
+# is a VIEW wrapping a table function like read_parquet. The identical
+# data exposed as a materialized TABLE has no such threshold and
+# returns correct results at every volume tested.
 #
 # Full write-up: M2-QUACKSCAN-BUG.md.
 #
@@ -14,8 +15,10 @@
 #
 #   scripts/repro-quackscan-bug.sh
 #
-# Exits non-zero if the pattern doesn't hold (either baseline queries
-# fail, or the trigger queries stop crashing).
+# Exits non-zero if the pattern doesn't hold — either the baseline
+# passes fail (small volume or full-schema queries stop working) or
+# the trigger queries stop crashing (bug fixed upstream) or the
+# TABLE-backed control queries crash (invalidates the workaround).
 
 set -euo pipefail
 
@@ -36,8 +39,13 @@ SQL
 cat > /tmp/repro_init.sql << 'SQL'
 INSTALL quack; INSTALL httpfs;
 LOAD quack; LOAD httpfs;
-CREATE OR REPLACE VIEW small AS SELECT * FROM read_parquet('/data/small.parquet');
-CREATE OR REPLACE VIEW over  AS SELECT * FROM read_parquet('/data/over.parquet');
+
+-- Same underlying data exposed both ways so we can prove the bug is
+-- view-specific, not projection-specific.
+CREATE OR REPLACE VIEW  v_small AS SELECT * FROM read_parquet('/data/small.parquet');
+CREATE OR REPLACE VIEW  v_over  AS SELECT * FROM read_parquet('/data/over.parquet');
+CREATE OR REPLACE TABLE t_over  AS SELECT * FROM read_parquet('/data/over.parquet');
+
 CALL quack_serve('quack:[::]:9494', token := 'localtoken', allow_other_hostname := true);
 SQL
 
@@ -68,34 +76,46 @@ run_q() {
   out=$(duckdb -c "INSTALL quack; LOAD quack; ATTACH 'localhost:9494' AS q (TYPE quack, TOKEN '$TOKEN'); $sql" 2>&1)
   local st="ok"
   echo "$out" | grep -qE "InternalException|assertion" && st="CRASH"
-  printf "    [%-52s] %s\n" "$label" "$st"
+  printf "    [%-56s] %s\n" "$label" "$st"
   [ "$st" = "ok" ]
 }
 
 BASELINE_OK=true
 CRASH_HIT=false
+TABLE_CONTROL_OK=true
 
-echo "==> Baseline: below threshold, everything works"
-run_q "small: SELECT c1 FROM q.small"                     "SELECT c1 FROM q.small;"                     || BASELINE_OK=false
-run_q "small: SELECT count(*) FROM q.small"               "SELECT count(*) FROM q.small;"               || BASELINE_OK=false
+echo "==> Baseline: below threshold, VIEW projection works"
+run_q "small VIEW: SELECT c1"                             "SELECT c1 FROM q.v_small;"                       || BASELINE_OK=false
+run_q "small VIEW: SELECT count(*)"                       "SELECT count(*) FROM q.v_small;"                 || BASELINE_OK=false
 
-echo "==> Baseline: full-schema passthrough works at every volume"
-run_q "over: SELECT * FROM q.over (WORKS)"                "SELECT * FROM q.over;"                       || BASELINE_OK=false
-run_q "over: SELECT c1, c2 FROM q.over (WORKS)"           "SELECT c1, c2 FROM q.over;"                  || BASELINE_OK=false
-run_q "over: SELECT c1+c2 AS s FROM q.over (WORKS)"       "SELECT c1+c2 AS s FROM q.over;"              || BASELINE_OK=false
+echo "==> Baseline: full-schema passthrough always works (even past threshold)"
+run_q "over VIEW: SELECT *"                               "SELECT * FROM q.v_over;"                         || BASELINE_OK=false
+run_q "over VIEW: SELECT c1, c2"                          "SELECT c1, c2 FROM q.v_over;"                    || BASELINE_OK=false
+run_q "over VIEW: SELECT c1+c2 AS s (derived, ok)"        "SELECT c1+c2 AS s FROM q.v_over;"                || BASELINE_OK=false
 
-echo "==> Trigger: column narrowing past the threshold — expect CRASH"
-run_q "over: SELECT c1 FROM q.over (EXPECT CRASH)"        "SELECT c1 FROM q.over;"                      && CRASH_HIT=true || true
-run_q "over: SELECT count(*) FROM q.over (EXPECT CRASH)"  "SELECT count(*) FROM q.over;"                && CRASH_HIT=true || true
+echo "==> Control: same data as TABLE — projection is fine at any volume"
+run_q "over TABLE: SELECT c1"                             "SELECT c1 FROM q.t_over;"                        || TABLE_CONTROL_OK=false
+run_q "over TABLE: SELECT count(*)"                       "SELECT count(*) FROM q.t_over;"                  || TABLE_CONTROL_OK=false
+
+echo "==> Trigger: VIEW-backed column narrowing past threshold — expect CRASH"
+run_q "over VIEW: SELECT c1 (EXPECT CRASH)"               "SELECT c1 FROM q.v_over;"                        && CRASH_HIT=true || true
+run_q "over VIEW: SELECT count(*) (EXPECT CRASH)"         "SELECT count(*) FROM q.v_over;"                  && CRASH_HIT=true || true
 
 echo ""
 if ! $BASELINE_OK; then
   echo "!! Baseline queries did not all succeed — either bug fixed upstream or repro broken."
   exit 2
 fi
-if $CRASH_HIT; then
-  echo "!! A trigger query returned OK — bug may be fixed upstream."
+if ! $TABLE_CONTROL_OK; then
+  echo "!! TABLE-backed control queries crashed — invalidates the view-specific hypothesis."
   exit 3
 fi
+if $CRASH_HIT; then
+  echo "!! A VIEW-backed trigger query returned OK — bug may be fixed upstream."
+  exit 4
+fi
 
-echo "OK — baseline passes, column-narrowing over threshold crashes as expected. Bug reproduced."
+echo "OK — pattern reproduced:"
+echo "   * VIEW-backed column narrowing past threshold crashes"
+echo "   * TABLE-backed same-shape queries succeed"
+echo "   * VIEW-backed full-schema passthrough succeeds"
