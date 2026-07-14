@@ -1,0 +1,11 @@
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+name: magnolia-quack
+nodes:
+  - role: control-plane
+    extraMounts:
+      # Mount the locally generated parquet fixtures into the node so the
+      # Quack pod can hostPath-mount them without an in-cluster object store.
+      - hostPath: ./fixtures
+        containerPath: /fixtures
+        readOnly: true
