@@ -2,7 +2,10 @@ module github.com/perebaj/magnolia-quack-poc
 
 go 1.26.2
 
-require github.com/parquet-go/parquet-go v0.30.1
+require (
+	github.com/marcboeker/go-duckdb/v2 v2.4.3
+	github.com/parquet-go/parquet-go v0.30.1
+)
 
 require (
 	github.com/andybalholm/brotli v1.2.0 // indirect
@@ -21,7 +24,6 @@ require (
 	github.com/klauspost/cpuid/v2 v2.3.0 // indirect
 	github.com/marcboeker/go-duckdb/arrowmapping v0.0.21 // indirect
 	github.com/marcboeker/go-duckdb/mapping v0.0.21 // indirect
-	github.com/marcboeker/go-duckdb/v2 v2.4.3 // indirect
 	github.com/parquet-go/bitpack v1.0.0 // indirect
 	github.com/parquet-go/jsonlite v1.0.0 // indirect
 	github.com/pierrec/lz4/v4 v4.1.22 // indirect
